@@ -14,7 +14,9 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="ScreenCraft" className="w-7 h-7 sm:w-8 sm:h-8" />
+            <span className="logo-wrap" tabIndex={-1}>
+              <img src="/logo.png" alt="ScreenCraft" className="logo-glow w-7 h-7 sm:w-8 sm:h-8" />
+            </span>
             <span className="font-semibold text-gray-900 dark:text-white text-base sm:text-lg">ScreenCraft</span>
           </div>
           <div className="flex items-center gap-3 sm:gap-6">
@@ -85,7 +87,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
             {/* Before */}
             <div className="space-y-3 sm:space-y-4">
               <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Raw Screenshot</p>
-              <div className="bg-white dark:bg-gray-700 rounded-xl sm:rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-600">
+              <div className="bg-white dark:bg-gray-700 rounded-xl sm:rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-600 card-hover relative">
                 <div className="bg-gray-100 dark:bg-gray-600 p-3 sm:p-4">
                   <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
                     <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-400" />
@@ -106,7 +108,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
             <div className="space-y-3 sm:space-y-4">
               <p className="text-xs sm:text-sm font-medium text-[hsl(245,79%,55%)] uppercase tracking-wider">ScreenCraft Polish</p>
               <div 
-                className="rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden"
+                className="rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden card-hover relative"
                 style={{
                   background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)',
                   padding: '24px',
@@ -217,7 +219,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
           </h2>
           
           <div className="grid sm:grid-cols-3 gap-6 sm:gap-8">
-            <div className="text-center p-4 sm:p-6 bg-white dark:bg-gray-700 rounded-xl shadow-sm">
+            <div className="text-center p-4 sm:p-6 bg-white dark:bg-gray-700 rounded-xl shadow-sm card-hover relative overflow-hidden">
               <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
                 <Code2 className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
               </div>
@@ -227,7 +229,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
               </p>
             </div>
 
-            <div className="text-center p-4 sm:p-6 bg-white dark:bg-gray-700 rounded-xl shadow-sm">
+            <div className="text-center p-4 sm:p-6 bg-white dark:bg-gray-700 rounded-xl shadow-sm card-hover relative overflow-hidden">
               <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 bg-purple-50 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
                 <Palette className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" />
               </div>
@@ -237,7 +239,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
               </p>
             </div>
 
-            <div className="text-center p-4 sm:p-6 bg-white dark:bg-gray-700 rounded-xl shadow-sm">
+            <div className="text-center p-4 sm:p-6 bg-white dark:bg-gray-700 rounded-xl shadow-sm card-hover relative overflow-hidden">
               <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 bg-pink-50 dark:bg-pink-900/30 rounded-xl flex items-center justify-center">
                 <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-pink-500" />
               </div>

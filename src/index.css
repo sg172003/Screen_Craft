@@ -178,3 +178,85 @@ input[type="range"]::-webkit-slider-thumb:hover {
   border-color: hsl(var(--sc-primary)) !important;
   background-color: hsl(var(--sc-primary) / 0.05) !important;
 }
+
+/* Logo glow effect */
+@keyframes logoPulse {
+  0% { transform: scale(1); box-shadow: 0 6px 20px hsl(var(--sc-primary) / 0.06); }
+  50% { transform: scale(1.04); box-shadow: 0 20px 60px hsl(var(--sc-primary) / 0.18); }
+  100% { transform: scale(1); box-shadow: 0 6px 20px hsl(var(--sc-primary) / 0.06); }
+}
+
+@layer components {
+  .logo-wrap {
+    display: inline-block;
+    border-radius: 0.5rem;
+    padding: 2px;
+    position: relative;
+    will-change: transform, box-shadow;
+  }
+
+  .logo-glow {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+    box-shadow: 0 6px 20px hsl(var(--sc-primary) / 0.06);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  .logo-wrap:hover .logo-glow {
+    transform: translateY(-3px) scale(1.03);
+    animation: logoPulse 2.8s ease-in-out infinite;
+  }
+
+  /* slightly stronger effect on focus (keyboard) */
+  .logo-wrap:focus-within .logo-glow {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 18px 48px hsl(var(--sc-primary) / 0.16);
+  }
+
+  /* Dark-mode tweak */
+  .dark .logo-glow {
+    box-shadow: 0 6px 20px hsl(var(--sc-primary) / 0.08);
+  }
+}
+
+/* Hover animation utilities */
+@layer components {
+  .btn-hover {
+    transition: transform 180ms cubic-bezier(.2,.8,.2,1), box-shadow 180ms cubic-bezier(.2,.8,.2,1);
+    will-change: transform, box-shadow;
+  }
+  .btn-hover:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(59,130,246,0.12);
+  }
+  .btn-hover:active {
+    transform: translateY(-1px) scale(0.995);
+  }
+
+  .card-hover {
+    position: relative;
+    transition: transform 220ms cubic-bezier(.2,.8,.2,1), box-shadow 220ms cubic-bezier(.2,.8,.2,1);
+    will-change: transform, box-shadow;
+  }
+  .card-hover:hover {
+    transform: translateY(-8px) rotate(-0.5deg);
+    box-shadow: 0 20px 40px rgba(2,6,23,0.08);
+  }
+  .card-hover::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(120deg, rgba(139,92,246,0.06), rgba(59,130,246,0.04));
+    opacity: 0;
+    transition: opacity 220ms ease;
+    pointer-events: none;
+  }
+  .card-hover:hover::before {
+    opacity: 1;
+  }
+}
