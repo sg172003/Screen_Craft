@@ -1,12 +1,13 @@
 import { useState, useCallback, lazy, Suspense } from 'react';
 import { Spinner } from '@/components/ui/spinner';
+import { ThemeProvider } from '@/context/ThemeContext';
 import './App.css';
 
 // Lazy load pages for better bundle splitting
 const LandingPage = lazy(() => import('@/sections/LandingPage').then(m => ({ default: m.LandingPage })));
 const EditorPage = lazy(() => import('@/sections/EditorPage').then(m => ({ default: m.EditorPage })));
 
-function App() {
+function AppContent() {
   const [showEditor, setShowEditor] = useState(false);
 
   const handleStartCrafting = useCallback(() => {
@@ -20,7 +21,7 @@ function App() {
   return (
     <Suspense 
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
           <Spinner className="w-8 h-8 text-[hsl(245,79%,55%)]" />
         </div>
       }
@@ -31,6 +32,14 @@ function App() {
         <LandingPage onStartCrafting={handleStartCrafting} />
       )}
     </Suspense>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 
