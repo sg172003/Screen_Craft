@@ -5,8 +5,7 @@ It beautifies screenshots without modifying their content.
 Everything runs entirely in your browser 🌐
 
 🚀 **Live Demo**
-[https://screencraft.vercel.app](https://screencraft.vercel.app)
-Replace this link if your deployment URL is different.
+https://screen-craft.vercel.app/
 
 ---
 
