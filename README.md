@@ -1,123 +1,107 @@
-# ScreenCraft 🎨
+# ✨ ScreenCraft
 
-> Turn raw screenshots into professional visuals — client-side, privacy-first, and lightning fast.
+ScreenCraft is a fast, privacy first, client side web app that turns raw screenshots into clean, professional visuals.
+It beautifies screenshots without modifying their content.
+Everything runs entirely in your browser 🌐
 
----
-
-## Table of Contents
-- [Overview](#overview)
-- [Demo](#demo)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Install](#install)
-  - [Run (development)](#run-development)
-  - [Build (production)](#build-production)
-- [Project Structure](#project-structure)
-- [Theme & Styling](#theme--styling)
-- [UX Enhancements](#ux-enhancements)
-- [Contributing](#contributing)
-- [Author](#author)
-- [License](#license)
+🚀 **Live Demo**
+[https://screencraft.vercel.app](https://screencraft.vercel.app)
+Replace this link if your deployment URL is different.
 
 ---
 
-## Overview
+## 🎯 What ScreenCraft Does
 
-ScreenCraft is a small, focused web app that polishes screenshots for use in landing pages, portfolios, and stores. It runs entirely in the browser (no server uploads) so your screenshots never leave your device — privacy-first by design.
+ScreenCraft helps you polish screenshots for product pages, portfolios, app stores, and social media.
 
-## Demo
+You can:
 
-Run locally and open the dev URL (usually `http://localhost:5173` or the alternate port Vite selects).
+* 📤 Upload screenshots in PNG or JPG format
+* 🎨 Add clean backgrounds. Solid colors, gradients, or subtle blur
+* 📐 Control padding, corner radius, and shadows
+* 🖥️ Wrap screenshots in browser or device frames
+* 📏 Use canvas size presets for stores and social platforms
+* 👀 Preview everything live
+* 📥 Export high quality PNG images in one click
 
-## Features
+---
 
-- 100% client-side screenshot polishing
-- Device frames, padding, corner radius, background gradients, and shadow controls
-- High-resolution PNG export
-- Dark mode + light mode with persisted preference
-- Smooth hover animations for buttons and cards
-- Professional logo glow effect in the navbar
+## 🚫 What ScreenCraft Does Not Do
 
-## Tech Stack
+* ❌ No image editing or filters
+* ❌ No cropping or text overlays
+* ❌ No user accounts or authentication
+* ❌ No backend or server
+* ❌ No image uploads or storage
 
-- React + TypeScript
-- Vite (dev server + build)
-- Tailwind CSS for utilities
-- Radix UI primitives and lucide-react icons
+---
 
-## Getting Started
+## 🧠 Core Principles
 
-### Prerequisites
+* 🧩 Fully client side
+* 🔐 Privacy first
+* ⚡ Fast and lightweight
+* 🎯 Minimal and focused UI
+* 🪟 One screen workflow
 
-- Node.js (>=16 recommended)
-- npm or yarn
+---
 
-### Install
+## 🛠️ Tech Stack
 
-```bash
-cd app
+* ⚛️ React with TypeScript
+* ⚡ Vite for development and builds
+* 🎨 Tailwind CSS for styling
+* 🖼️ HTML Canvas API for rendering
+* 🌍 Runs completely in the browser
+
+---
+
+## 💡 Why ScreenCraft
+
+ScreenCraft is built for developers, indie hackers, designers, and product builders who want polished visuals quickly.
+
+Perfect for:
+
+* 🏪 Chrome Web Store listings
+* 📄 Product landing pages
+* 💼 Portfolios
+* 🚀 SaaS marketing assets
+* 📱 Social media previews
+
+No setup.
+No signup.
+No tracking.
+
+---
+
+## 🧪 Getting Started Locally
+
+1️⃣ Clone the repository
+2️⃣ Install dependencies
 npm install
-```
-
-### Run (development)
-
-```bash
-cd app
+3️⃣ Start the development server
 npm run dev
-```
+4️⃣ Open the local URL shown in the terminal
 
-Open the URL shown by Vite (e.g. `http://localhost:5173` or the alternate port Vite picks).
+---
 
-### Build (production)
+## 📌 Project Status
 
-```bash
-cd app
-npm run build
-# optionally preview
-npm run preview
-```
+* 🧱 Actively under development
+* 🎨 Core editor implemented
+* 🛑 Backend intentionally excluded
 
-## Project Structure (important files)
+---
 
-- `src/` — application source
-  - `src/sections/LandingPage.tsx` — landing page UI and hero
-  - `src/sections/EditorPage.tsx` — editor UI (lazy loaded)
-  - `src/components/ui/button.tsx` — shared `Button` component
-  - `src/components/ThemeToggle.tsx` — theme toggle control
-  - `src/context/ThemeContext.tsx` — theme provider + persistence logic
-  - `src/index.css` — Tailwind base + custom utilities (hover/card/button/logo glow)
+## 📄 License
 
-## Theme & Styling
+MIT License
 
-- The app uses Tailwind CSS with CSS custom properties for colors.
-- Dark mode is implemented via a top-level `.dark` class on the document root; the `ThemeProvider` reads/stores preference in `localStorage` and respects the system preference on first load.
+---
 
-## UX Enhancements
+## ✍️ Tagline
 
-- Button hover effect: subtle lift + soft shadow to indicate interactivity.
-- Card hover effect: slightly larger lift with an angled micro-rotation and a faint gradient sheen.
-- Navbar logo glow: a polished pulsing glow + lift on hover/focus for a professional highlight.
-
-If you'd like the effects tuned (duration, intensity, color), edit `src/index.css` where the animation utilities are defined.
-
-## Contributing
-
-Thanks for considering contributing! A few guidelines to help:
-
-- Create a feature branch from `main`: `git switch -c feature/your-feature`
-- Commit logically and write clear commit messages
-- Open a PR describing what you changed and why
-
-Please don't push directly to `main` without coordinating (you can push branches freely).
-
-## Author
-
-🚀 Author: Sarthak
-
-## License
-
-This project does not include an explicit license file. Add one (e.g., MIT) if you plan to publish this repository publicly.
+We beautify screenshots.
+We do not modify them.
 
 ---
