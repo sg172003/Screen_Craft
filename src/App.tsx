@@ -1,4 +1,5 @@
 import { useState, useCallback, lazy, Suspense } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { Spinner } from '@/components/ui/spinner';
 import { ThemeProvider } from '@/context/ThemeContext';
 import './App.css';
@@ -39,6 +40,7 @@ function App() {
   return (
     <ThemeProvider>
       <AppContent />
+      <Analytics />
     </ThemeProvider>
   );
 }
