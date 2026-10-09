@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 interface UseImageUploadReturn {
   image: HTMLImageElement | null;
@@ -97,6 +97,30 @@ export function useImageUpload(): UseImageUploadReturn {
     setFileName('');
     setError(null);
   }, []);
+
+  // Clipboard paste support (Ctrl+V / Cmd+V)
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      for (const item of Array.from(items)) {
+        if (item.type.startsWith('image/')) {
+          e.preventDefault();
+          const file = item.getAsFile();
+          if (file) {
+            loadImage(file).catch((err: Error) => {
+              setError(err.message);
+            });
+          }
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('paste', handlePaste);
+    return () => window.removeEventListener('paste', handlePaste);
+  }, [loadImage]);
 
   return {
     image,

@@ -13,6 +13,7 @@ export interface CanvasSettings {
   blurAmount: number;
   frameType: 'none' | 'browser' | 'desktop' | 'mobile';
   frameDarkMode: boolean;
+  exportScale: number;
 }
 
 export interface CanvasPreset {
@@ -23,14 +24,17 @@ export interface CanvasPreset {
 }
 
 export const CANVAS_PRESETS: CanvasPreset[] = [
+  { name: 'Auto (Match Screenshot)', width: 0, height: 0, category: 'custom' },
   { name: 'Chrome Web Store Marquee', width: 1400, height: 560, category: 'chrome-web-store' },
   { name: 'Chrome Web Store Screenshot', width: 1280, height: 800, category: 'chrome-web-store' },
   { name: 'Twitter/X Post', width: 1200, height: 675, category: 'social' },
   { name: 'Instagram Post', width: 1080, height: 1080, category: 'social' },
-  { name: 'Instagram Story', width: 1080, height: 1920, category: 'social' },
+  { name: 'Instagram Story (9:16)', width: 1080, height: 1920, category: 'social' },
   { name: 'LinkedIn Post', width: 1200, height: 627, category: 'social' },
   { name: 'Dribbble Shot', width: 1600, height: 1200, category: 'social' },
   { name: 'Product Hunt', width: 1270, height: 760, category: 'social' },
+  { name: '1080p Full HD', width: 1920, height: 1080, category: 'custom' },
+  { name: '4K Ultra HD', width: 3840, height: 2160, category: 'custom' },
 ];
 
 export const GRADIENT_PRESETS = [
@@ -57,4 +61,5 @@ export const DEFAULT_SETTINGS: CanvasSettings = {
   blurAmount: 20,
   frameType: 'browser',
   frameDarkMode: false,
+  exportScale: 2,
 };
