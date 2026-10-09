@@ -2,6 +2,12 @@ import { memo } from 'react';
 import { ArrowRight, Shield, Zap, Download, Code2, Palette, Sparkles, Upload, Sliders, Image as ImageIcon, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '@/components/ui/accordion';
 
 interface LandingPageProps {
   onStartCrafting: () => void;
@@ -15,7 +21,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="logo-wrap" tabIndex={-1}>
-              <img src="/logo.png" alt="ScreenCraft" className="logo-glow w-7 h-7 sm:w-8 sm:h-8" />
+              <img src="/logo.png" alt="ScreenCraft Logo" className="logo-glow w-7 h-7 sm:w-8 sm:h-8" />
             </span>
             <span className="font-semibold text-gray-900 dark:text-white text-base sm:text-lg">ScreenCraft</span>
           </div>
@@ -26,11 +32,23 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
             >
               How it works
             </a>
+            <a 
+              href="#features" 
+              className="hidden md:block text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+            >
+              Features
+            </a>
+            <a 
+              href="#faq" 
+              className="hidden sm:block text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+            >
+              FAQ
+            </a>
             <ThemeToggle />
             <Button 
               onClick={onStartCrafting}
               size="sm"
-              className="bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,45%)] text-white text-xs sm:text-sm"
+              className="bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,45%)] text-white text-xs sm:text-sm font-medium shadow-sm"
             >
               <span className="hidden sm:inline">Launch Editor</span>
               <span className="sm:hidden">Start</span>
@@ -49,13 +67,13 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
           
           <p className="text-base sm:text-xl text-gray-600 dark:text-gray-400 max-w-xl mx-auto mb-6 sm:mb-8 px-4 sm:px-0">
             We beautify, not modify. Polish screenshots for Chrome Web Store, portfolios, 
-            and product pages instantly.
+            and product pages instantly with macOS frames and 4K Retina export.
           </p>
 
           <Button 
             onClick={onStartCrafting}
             size="lg"
-            className="bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,45%)] text-white text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 h-auto rounded-xl w-full sm:w-auto"
+            className="bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,45%)] text-white text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 h-auto rounded-xl w-full sm:w-auto shadow-lg shadow-[hsl(245,79%,55%)]/25"
           >
             Start Crafting — Free & No Signup
             <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
@@ -63,18 +81,18 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
 
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 mt-6 sm:mt-8 text-xs sm:text-sm text-gray-500 dark:text-gray-500">
             <span className="flex items-center gap-1.5">
-              <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[hsl(245,79%,55%)]" />
               Client-side
             </span>
             <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700" />
             <span className="flex items-center gap-1.5">
-              <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              No storage
+              <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500" />
+              100% Private (No storage)
             </span>
             <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700" />
             <span className="flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              Instant
+              <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500" />
+              Instant 4K Export
             </span>
           </div>
         </div>
@@ -149,7 +167,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
               How it works
             </h2>
             <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
-              Three simple steps to transform your screenshots
+              Three simple steps to transform your screenshots into stunning graphics
             </p>
           </div>
 
@@ -166,10 +184,10 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
                 1
               </span>
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                Upload Screenshot
+                Upload or Paste (Ctrl+V)
               </h3>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
-                Drag and drop or click to upload your PNG or JPG screenshot. Everything stays in your browser.
+                Drag, drop, browse, or directly paste with Ctrl+V. Preserves 100% of native screenshot resolution.
               </p>
             </div>
 
@@ -185,10 +203,10 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
                 2
               </span>
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                Customize Style
+                Customize Frames & Style
               </h3>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
-                Choose device frames, backgrounds, padding, and shadows. See changes instantly in the preview.
+                Choose macOS browser, desktop, or mobile frames, vibrant gradients, shadows, and store presets.
               </p>
             </div>
 
@@ -201,10 +219,10 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
                 3
               </span>
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                Download & Share
+                Download 4K Retina PNG
               </h3>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
-                Export high-resolution PNG with one click. Perfect for Chrome Web Store, social media, or portfolios.
+                Export crisp 2x or 3x high-resolution PNGs or copy straight to clipboard for instant sharing.
               </p>
             </div>
           </div>
@@ -212,10 +230,10 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
       </section>
 
       {/* Features */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-gray-50 dark:bg-gray-800 transition-colors">
+      <section id="features" className="py-16 sm:py-20 px-4 sm:px-6 bg-gray-50 dark:bg-gray-800 transition-colors">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 dark:text-white mb-10 sm:mb-12">
-            Built for creators
+            Built for creators & makers
           </h2>
           
           <div className="grid sm:grid-cols-3 gap-6 sm:gap-8">
@@ -225,7 +243,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
               </div>
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1.5 sm:mb-2">Developers</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Create polished screenshots for GitHub repos, documentation, and portfolios.
+                Create polished screenshots for GitHub repos, documentation, Readmes, and technical blogs.
               </p>
             </div>
 
@@ -235,7 +253,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
               </div>
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1.5 sm:mb-2">Designers</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Showcase your work with beautiful device frames and gradients.
+                Showcase your portfolio designs with authentic device chrome, gradients, and custom shadows.
               </p>
             </div>
 
@@ -245,7 +263,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
               </div>
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1.5 sm:mb-2">Product Builders</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Perfect for Chrome Web Store, Product Hunt, and app store listings.
+                Ideal for Chrome Web Store marquees, Product Hunt badges, and social media announcements.
               </p>
             </div>
           </div>
@@ -262,12 +280,12 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
               </h3>
               <ul className="space-y-3 sm:space-y-4">
                 {[
-                  'Canvas presets for Chrome Web Store & social',
-                  'Device frames: Browser, Desktop, Mobile',
-                  'Gradient & solid color backgrounds',
-                  'Blurred background from screenshot',
-                  'Adjustable padding & corner radius',
-                  'Shadow effects with intensity control',
+                  '100% native resolution matching (zero compression)',
+                  'Presets for Chrome Web Store, Twitter/X, and Instagram',
+                  'Device frames: Browser, Desktop, Smartphone',
+                  'Gradient, solid color, and blurred background effects',
+                  'Adjustable padding, corner radius, and drop shadow',
+                  '2x Retina and 3x Ultra HD PNG export with 1-click clipboard copy',
                 ].map((feature, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <Check className="w-5 h-5 text-green-500 mt-0.5 shrink-0" />
@@ -283,12 +301,12 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
               </h3>
               <ul className="space-y-3 sm:space-y-4">
                 {[
-                  '100% client-side processing',
-                  'No images uploaded to servers',
-                  'No account required',
-                  'No tracking or analytics',
-                  'Open source & transparent',
-                  'Your data stays yours',
+                  '100% client-side HTML5 canvas processing',
+                  'No images uploaded to any cloud server',
+                  'No account or email registration required',
+                  'No tracking cookies or analytics scripts',
+                  'Open source under permissive MIT license',
+                  'Works completely offline once loaded',
                 ].map((feature, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <Check className="w-5 h-5 text-green-500 mt-0.5 shrink-0" />
@@ -304,12 +322,82 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
       {/* Privacy Note */}
       <section className="py-12 sm:py-16 px-4 sm:px-6 bg-gray-900 dark:bg-gray-950 text-white">
         <div className="max-w-3xl mx-auto text-center">
-          <Shield className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 text-green-400" />
-          <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Privacy First</h2>
+          <Shield className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 text-emerald-400" />
+          <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Privacy Guaranteed</h2>
           <p className="text-gray-400 max-w-lg mx-auto text-sm sm:text-base">
-            ScreenCraft runs entirely in your browser. Your screenshots never leave your device. 
-            No uploads, no storage, no tracking.
+            ScreenCraft runs entirely inside your browser. Your screenshots never leave your machine. 
+            Zero uploads, zero telemetry, zero storage.
           </p>
+        </div>
+      </section>
+
+      {/* FAQ Section (Crucial for SEO Rich Snippets) */}
+      <section id="faq" className="py-16 sm:py-24 px-4 sm:px-6 bg-gray-50 dark:bg-gray-800/60 transition-colors">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-10 sm:mb-14">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400">
+              Everything you need to know about the ScreenCraft screenshot mockup editor
+            </p>
+          </div>
+
+          <Accordion type="single" collapsible className="w-full space-y-3">
+            <AccordionItem value="item-1" className="bg-white dark:bg-gray-700/80 rounded-xl px-4 sm:px-6 border border-gray-200 dark:border-gray-600 shadow-xs">
+              <AccordionTrigger className="text-base font-semibold text-gray-900 dark:text-white hover:no-underline">
+                How do I create mockups for the Chrome Web Store?
+              </AccordionTrigger>
+              <AccordionContent className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
+                ScreenCraft includes built-in presets conforming to Google Chrome Web Store specifications: Marquee Promo (1400×560px) and Standard Screenshot (1280×800px). Select the preset in the canvas controls to automatically format your extension screenshot.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-2" className="bg-white dark:bg-gray-700/80 rounded-xl px-4 sm:px-6 border border-gray-200 dark:border-gray-600 shadow-xs">
+              <AccordionTrigger className="text-base font-semibold text-gray-900 dark:text-white hover:no-underline">
+                Does ScreenCraft compress or reduce my screenshot quality?
+              </AccordionTrigger>
+              <AccordionContent className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
+                No. ScreenCraft preserves 100% of the native screenshot resolution with zero downscaling. When exporting, you can choose 1x, 2x Retina HD, or 3x Ultra HD offscreen rendering for razor-sharp text and borders.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-3" className="bg-white dark:bg-gray-700/80 rounded-xl px-4 sm:px-6 border border-gray-200 dark:border-gray-600 shadow-xs">
+              <AccordionTrigger className="text-base font-semibold text-gray-900 dark:text-white hover:no-underline">
+                Are my screenshots private and secure?
+              </AccordionTrigger>
+              <AccordionContent className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
+                Yes, 100%. ScreenCraft processes images purely on the client side using HTML5 Canvas. Your images are never transmitted over the network or saved to any database.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-4" className="bg-white dark:bg-gray-700/80 rounded-xl px-4 sm:px-6 border border-gray-200 dark:border-gray-600 shadow-xs">
+              <AccordionTrigger className="text-base font-semibold text-gray-900 dark:text-white hover:no-underline">
+                Can I paste screenshots directly from my clipboard?
+              </AccordionTrigger>
+              <AccordionContent className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
+                Yes! Press Ctrl+V (or Cmd+V on Mac) anywhere in the app after capturing a screenshot to import it instantly without needing to save a temporary file.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-5" className="bg-white dark:bg-gray-700/80 rounded-xl px-4 sm:px-6 border border-gray-200 dark:border-gray-600 shadow-xs">
+              <AccordionTrigger className="text-base font-semibold text-gray-900 dark:text-white hover:no-underline">
+                Which device frames and canvas presets are available?
+              </AccordionTrigger>
+              <AccordionContent className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
+                ScreenCraft features macOS Safari-style browser windows, desktop window frames, and smartphone bezels with notch (all supporting Light and Dark themes). Presets include Chrome Web Store, Twitter/X, Instagram, LinkedIn, Dribbble, Product Hunt, 1080p, and 4K UHD.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-6" className="bg-white dark:bg-gray-700/80 rounded-xl px-4 sm:px-6 border border-gray-200 dark:border-gray-600 shadow-xs">
+              <AccordionTrigger className="text-base font-semibold text-gray-900 dark:text-white hover:no-underline">
+                Is ScreenCraft free for commercial use?
+              </AccordionTrigger>
+              <AccordionContent className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
+                Yes. ScreenCraft is completely free and open-source under the MIT license. You can use all exported images in commercial websites, marketing materials, and store listings without watermarks.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </section>
 
@@ -325,9 +413,9 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
           <Button 
             onClick={onStartCrafting}
             size="lg"
-            className="bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,45%)] text-white text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 h-auto rounded-xl w-full sm:w-auto"
+            className="bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,45%)] text-white text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 h-auto rounded-xl w-full sm:w-auto shadow-lg shadow-[hsl(245,79%,55%)]/20"
           >
-            Start Crafting Now
+            Start Crafting Now — Free
             <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
           </Button>
         </div>
@@ -337,12 +425,18 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
       <footer className="py-6 sm:py-8 px-4 sm:px-6 border-t border-gray-100 dark:border-gray-800 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="ScreenCraft" className="w-5 h-5 sm:w-6 sm:h-6" />
+            <img src="/logo.png" alt="ScreenCraft Logo" className="w-5 h-5 sm:w-6 sm:h-6" />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">ScreenCraft</span>
           </div>
-          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 text-center">
-            © 2026 ScreenCraft. All rights reserved. <br />
-       <b>🚀 Author : Sarthak 😊 </b>
+          <div className="flex items-center gap-4 text-xs text-gray-500">
+            <a href="#how-it-works" className="hover:text-gray-900 dark:hover:text-white transition-colors">How it works</a>
+            <a href="#features" className="hover:text-gray-900 dark:hover:text-white transition-colors">Features</a>
+            <a href="#faq" className="hover:text-gray-900 dark:hover:text-white transition-colors">FAQ</a>
+            <a href="https://github.com/sg172003/Screen_Craft" target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition-colors">GitHub</a>
+          </div>
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 text-center sm:text-right">
+            © 2026 ScreenCraft. Open source under MIT. <br />
+            <b>🚀 Author : Sarthak 😊 </b>
           </p>
         </div>
       </footer>
