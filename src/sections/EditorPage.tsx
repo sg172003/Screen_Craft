@@ -1,11 +1,30 @@
 import { memo, useState, useCallback, useRef, useEffect } from 'react';
-import { Download, ArrowLeft, Image as ImageIcon, SlidersHorizontal, Copy, Check, Sparkles } from 'lucide-react';
+import {
+  Download,
+  ArrowLeft,
+  Image as ImageIcon,
+  Film,
+  SlidersHorizontal,
+  Copy,
+  Check,
+  Sparkles,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Repeat,
+  Camera,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
 import { ControlPanel } from '@/components/editor/ControlPanel';
 import { CanvasPreview } from '@/components/editor/CanvasPreview';
 import { ImageUploader } from '@/components/editor/ImageUploader';
-import { useImageUpload } from '@/hooks/useImageUpload';
+import { VideoExportDialog } from '@/components/editor/VideoExportDialog';
+import { useMediaUpload } from '@/hooks/useMediaUpload';
 import { exportHighResImage, copyHighResToClipboard } from '@/lib/canvasRenderer';
+import { captureVideoFrame } from '@/lib/videoExporter';
+import { trackImageExport, trackMediaUpload } from '@/lib/analytics';
 import type { CanvasSettings } from '@/types';
 import { DEFAULT_SETTINGS } from '@/types';
 
@@ -13,46 +32,79 @@ interface EditorPageProps {
   onBack: () => void;
 }
 
+function formatTime(seconds: number): string {
+  if (isNaN(seconds) || seconds < 0) return '00:00';
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+}
+
 export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) {
   const [settings, setSettings] = useState<CanvasSettings>(DEFAULT_SETTINGS);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [isVideoExportOpen, setIsVideoExportOpen] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const {
     image,
+    video,
+    mediaType,
     fileName,
     isDragging,
     error,
+    isLoading,
+    isPlaying,
+    currentTime,
+    duration,
+    isMuted,
+    isLooping,
+    togglePlay,
+    seek,
+    toggleMute,
+    toggleLoop,
     handleDragOver,
     handleDragLeave,
     handleDrop,
     handleFileSelect,
-  } = useImageUpload();
+  } = useMediaUpload();
 
-  // Automatically adjust canvas size to screenshot native resolution when image is imported
-  // This guarantees 0% downscaling and preserves 100% native resolution
-  const lastLoadedImageRef = useRef<HTMLImageElement | null>(null);
+  // Automatically adjust canvas size to native resolution when media is imported
+  // This guarantees 0% downscaling and preserves 100% native quality
+  const lastLoadedMediaRef = useRef<HTMLImageElement | HTMLVideoElement | null>(null);
   useEffect(() => {
-    if (image && image !== lastLoadedImageRef.current) {
-      lastLoadedImageRef.current = image;
-      const isPortrait = image.naturalHeight > image.naturalWidth;
-      const recommendedFrame = isPortrait ? 'mobile' : 'browser';
-      const frameOffset = recommendedFrame === 'browser' ? 32 : 0;
+    const media = image || video;
+    if (media && media !== lastLoadedMediaRef.current) {
+      lastLoadedMediaRef.current = media;
+      const mediaWidth = 'naturalWidth' in media ? media.naturalWidth : media.videoWidth;
+      const mediaHeight = 'naturalHeight' in media ? media.naturalHeight : media.videoHeight;
 
-      const padding = 40;
-      const optimalWidth = Math.round(image.naturalWidth + padding * 2);
-      const optimalHeight = Math.round(image.naturalHeight + padding * 2 + frameOffset);
+      if (mediaWidth > 0 && mediaHeight > 0) {
+        const isPortrait = mediaHeight > mediaWidth;
+        const recommendedFrame = isPortrait ? 'mobile' : 'browser';
+        const frameOffset = recommendedFrame === 'browser' ? 32 : 0;
 
-      setSettings((prev) => ({
-        ...prev,
-        width: optimalWidth,
-        height: optimalHeight,
-        frameType: isPortrait && prev.frameType === 'browser' ? 'mobile' : prev.frameType,
-      }));
+        const padding = 40;
+        const optimalWidth = Math.round(mediaWidth + padding * 2);
+        const optimalHeight = Math.round(mediaHeight + padding * 2 + frameOffset);
+
+        setSettings((prev) => ({
+          ...prev,
+          width: optimalWidth,
+          height: optimalHeight,
+          frameType: isPortrait && prev.frameType === 'browser' ? 'mobile' : prev.frameType,
+        }));
+
+        // Track upload event
+        trackMediaUpload(
+          mediaType || 'image',
+          0,
+          `${mediaWidth}x${mediaHeight}`
+        );
+      }
     }
-  }, [image]);
+  }, [image, video, mediaType]);
 
   // Handle canvas ref from CanvasPreview
   const handleCanvasRef = useCallback((canvas: HTMLCanvasElement | null) => {
@@ -61,25 +113,31 @@ export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) 
 
   // Reset settings
   const handleReset = useCallback(() => {
-    if (image) {
-      const isPortrait = image.naturalHeight > image.naturalWidth;
-      let frameOffset = 0;
-      if (isPortrait) frameOffset = 0;
-      else frameOffset = 32;
+    const media = image || video;
+    if (media) {
+      const mediaWidth = 'naturalWidth' in media ? media.naturalWidth : media.videoWidth;
+      const mediaHeight = 'naturalHeight' in media ? media.naturalHeight : media.videoHeight;
+      const isPortrait = mediaHeight > mediaWidth;
+      const frameOffset = isPortrait ? 0 : 32;
 
       setSettings({
         ...DEFAULT_SETTINGS,
-        width: image.naturalWidth + 80,
-        height: image.naturalHeight + 80 + frameOffset,
+        width: mediaWidth + 80,
+        height: mediaHeight + 80 + frameOffset,
         frameType: isPortrait ? 'mobile' : 'browser',
       });
     } else {
       setSettings(DEFAULT_SETTINGS);
     }
-  }, [image]);
+  }, [image, video]);
 
   // Export high-resolution image using offscreen canvas scaled by exportScale (e.g. 2x, 3x)
   const handleExport = useCallback(async () => {
+    if (mediaType === 'video' && video) {
+      setIsVideoExportOpen(true);
+      return;
+    }
+
     if (!image) return;
     setIsExporting(true);
 
@@ -91,12 +149,30 @@ export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) 
       link.download = `${baseName}-${scale}x.png`;
       link.href = dataUrl;
       link.click();
+      trackImageExport(scale, 'png');
     } catch (err) {
       console.error('Export failed:', err);
     } finally {
       setIsExporting(false);
     }
-  }, [image, settings, fileName]);
+  }, [image, video, mediaType, settings, fileName]);
+
+  // Capture video frame as PNG snapshot
+  const handleCaptureVideoSnapshot = useCallback(() => {
+    if (!video) return;
+    try {
+      const scale = settings.exportScale || 2;
+      const dataUrl = captureVideoFrame(settings, video, scale);
+      const link = document.createElement('a');
+      const baseName = fileName ? fileName.replace(/\.[^/.]+$/, '') : 'screen-recording';
+      link.download = `${baseName}-snapshot-${Math.round(currentTime)}s-${scale}x.png`;
+      link.href = dataUrl;
+      link.click();
+      trackImageExport(scale, 'video-frame-snapshot');
+    } catch (err) {
+      console.error('Frame capture failed:', err);
+    }
+  }, [video, settings, fileName, currentTime]);
 
   // Copy high-resolution image to clipboard
   const handleCopy = useCallback(async () => {
@@ -112,20 +188,29 @@ export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) 
     }
   }, [image, settings]);
 
-  // Keyboard shortcut for export (Ctrl/Cmd + S)
+  // Keyboard shortcuts (Ctrl/Cmd + S for export, Space for video play/pause)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't intercept if user is typing in an input
+      const target = e.target as HTMLElement | null;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
+        return;
+      }
+
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
-        if (image) {
+        if (image || video) {
           handleExport();
         }
+      } else if (e.code === 'Space' && video) {
+        e.preventDefault();
+        togglePlay();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleExport, image]);
+  }, [handleExport, togglePlay, image, video]);
 
   // Close mobile panel on wide resize
   useEffect(() => {
@@ -142,6 +227,7 @@ export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) 
   const exportScale = settings.exportScale || 2;
   const exportWidth = settings.width * exportScale;
   const exportHeight = settings.height * exportScale;
+  const hasMedia = Boolean(image || video);
 
   return (
     <div className="h-screen flex flex-col bg-[hsl(220,20%,10%)] overflow-hidden">
@@ -167,7 +253,11 @@ export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) 
             <>
               <div className="w-px h-6 bg-white/10 hidden md:block" />
               <span className="text-xs text-white/50 hidden md:flex items-center gap-1.5 truncate max-w-[140px] lg:max-w-xs">
-                <ImageIcon className="w-3.5 h-3.5 shrink-0 text-white/40" />
+                {mediaType === 'video' ? (
+                  <Film className="w-3.5 h-3.5 shrink-0 text-violet-400" />
+                ) : (
+                  <ImageIcon className="w-3.5 h-3.5 shrink-0 text-white/40" />
+                )}
                 <span className="truncate">{fileName}</span>
               </span>
             </>
@@ -191,14 +281,28 @@ export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) 
             variant="ghost"
             size="sm"
             onClick={handleReset}
-            disabled={!image}
+            disabled={!hasMedia}
             className="hidden sm:flex text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-30 h-8 text-xs"
           >
             Reset
           </Button>
 
-          {/* Copy to clipboard button */}
-          {image && (
+          {/* Video snapshot button */}
+          {mediaType === 'video' && video && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleCaptureVideoSnapshot}
+              className="text-white/70 hover:text-white hover:bg-white/10 h-8 px-2 sm:px-3 text-xs"
+              title="Capture Current Video Frame as PNG"
+            >
+              <Camera className="w-3.5 h-3.5 mr-1 text-violet-400" />
+              <span className="hidden sm:inline">Capture Frame</span>
+            </Button>
+          )}
+
+          {/* Copy to clipboard button (for images) */}
+          {mediaType === 'image' && image && (
             <Button
               variant="ghost"
               size="sm"
@@ -220,36 +324,48 @@ export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) 
             </Button>
           )}
 
-          {/* High-Res PNG Export Button */}
-          <Button
-            onClick={handleExport}
-            disabled={!image || isExporting}
-            size="sm"
-            className="bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,45%)] text-white disabled:opacity-40 disabled:cursor-not-allowed text-xs sm:text-sm h-8 sm:h-9 px-3 sm:px-4 font-medium shadow-md shadow-[hsl(245,79%,55%)]/20"
-          >
-            <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
-            <span className="hidden sm:inline">
-              {isExporting ? 'Exporting...' : `Download ${exportScale}x PNG`}
-            </span>
-            <span className="sm:hidden">{isExporting ? '...' : `Export ${exportScale}x`}</span>
-          </Button>
+          {/* Export Button (PNG for images, MP4/WebM Dialog for video) */}
+          {mediaType === 'video' ? (
+            <Button
+              onClick={() => setIsVideoExportOpen(true)}
+              disabled={!video}
+              size="sm"
+              className="bg-violet-600 hover:bg-violet-700 text-white disabled:opacity-40 disabled:cursor-not-allowed text-xs sm:text-sm h-8 sm:h-9 px-3 sm:px-4 font-medium shadow-md shadow-violet-600/20"
+            >
+              <Film className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
+              <span>Export Video</span>
+            </Button>
+          ) : (
+            <Button
+              onClick={handleExport}
+              disabled={!image || isExporting}
+              size="sm"
+              className="bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,45%)] text-white disabled:opacity-40 disabled:cursor-not-allowed text-xs sm:text-sm h-8 sm:h-9 px-3 sm:px-4 font-medium shadow-md shadow-[hsl(245,79%,55%)]/20"
+            >
+              <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
+              <span className="hidden sm:inline">
+                {isExporting ? 'Exporting...' : `Download ${exportScale}x PNG`}
+              </span>
+              <span className="sm:hidden">{isExporting ? '...' : `Export ${exportScale}x`}</span>
+            </Button>
+          )}
         </div>
       </header>
 
       {/* Main Workspace Layout */}
       <div className="flex-1 flex overflow-hidden relative">
-        {/* Left Control Panel (Desktop sidebar & Mobile bottom sheet) */}
+        {/* Left Control Panel */}
         <ControlPanel
           settings={settings}
           onSettingsChange={setSettings}
           onReset={handleReset}
           isOpen={isPanelOpen}
           onClose={() => setIsPanelOpen(false)}
-          image={image}
+          image={image || video}
         />
 
         {/* Center / Right Canvas Workspace */}
-        <div className="flex-1 flex flex-col min-w-0 h-full">
+        <div className="flex-1 flex flex-col min-w-0 h-full relative">
           {/* Resolution & Quality Status Bar */}
           <div className="h-8 bg-[hsl(220,15%,12%)] border-b border-[hsl(220,10%,18%)] flex items-center justify-between px-3 sm:px-6 shrink-0 text-[11px] sm:text-xs text-white/50">
             <div className="flex items-center gap-2 truncate">
@@ -262,27 +378,120 @@ export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) 
               </span>
             </div>
 
-            {image && (
-              <div className="flex items-center gap-1.5 text-emerald-400 font-medium shrink-0">
-                <Sparkles className="w-3 h-3" />
-                <span className="text-[10px] sm:text-xs">100% Native Resolution</span>
+            {hasMedia && (
+              <div className="flex items-center gap-2 shrink-0">
+                {mediaType === 'video' ? (
+                  <div className="flex items-center gap-1.5 text-violet-400 font-medium">
+                    <Film className="w-3 h-3" />
+                    <span className="text-[10px] sm:text-xs">Video Screen Recording</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5 text-emerald-400 font-medium">
+                    <Sparkles className="w-3 h-3" />
+                    <span className="text-[10px] sm:text-xs">100% Native Resolution</span>
+                  </div>
+                )}
               </div>
             )}
           </div>
 
           {/* Canvas or Uploader */}
-          {image ? (
-            <CanvasPreview
-              settings={settings}
-              image={image}
-              onCanvasRef={handleCanvasRef}
-            />
+          {hasMedia ? (
+            <div className="flex-1 flex flex-col min-h-0 relative">
+              <CanvasPreview
+                settings={settings}
+                image={image}
+                video={video}
+                isPlaying={isPlaying}
+                onCanvasRef={handleCanvasRef}
+              />
+
+              {/* Floating Video Playback Controller */}
+              {mediaType === 'video' && video && (
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-xl bg-gray-950/85 backdrop-blur-md border border-white/10 rounded-xl p-2.5 sm:p-3 shadow-2xl flex flex-col gap-2 z-10 transition-all">
+                  {/* Scrubber slider */}
+                  <div className="flex items-center gap-3">
+                    <span className="text-[11px] font-mono text-white/60 min-w-[36px]">
+                      {formatTime(currentTime)}
+                    </span>
+                    <Slider
+                      value={[currentTime]}
+                      max={duration || 1}
+                      step={0.05}
+                      onValueChange={([val]) => seek(val)}
+                      className="flex-1 cursor-pointer"
+                    />
+                    <span className="text-[11px] font-mono text-white/40 min-w-[36px] text-right">
+                      {formatTime(duration)}
+                    </span>
+                  </div>
+
+                  {/* Playback Controls Buttons */}
+                  <div className="flex items-center justify-between pt-1">
+                    <div className="flex items-center gap-1.5">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={togglePlay}
+                        className="h-8 w-8 p-0 text-white hover:bg-white/10 rounded-full"
+                        title={isPlaying ? 'Pause (Space)' : 'Play (Space)'}
+                      >
+                        {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-white" />}
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={toggleMute}
+                        className="h-8 w-8 p-0 text-white/70 hover:text-white hover:bg-white/10 rounded-full"
+                        title={isMuted ? 'Unmute' : 'Mute'}
+                      >
+                        {isMuted ? <VolumeX className="w-4 h-4 text-amber-400" /> : <Volume2 className="w-4 h-4" />}
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={toggleLoop}
+                        className={`h-8 w-8 p-0 hover:bg-white/10 rounded-full ${isLooping ? 'text-violet-400' : 'text-white/40'}`}
+                        title={isLooping ? 'Looping enabled' : 'Looping disabled'}
+                      >
+                        <Repeat className="w-4 h-4" />
+                      </Button>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleCaptureVideoSnapshot}
+                        className="h-7 text-xs text-white/70 hover:text-white px-2.5 rounded-lg border border-white/10"
+                        title="Capture current video frame as PNG"
+                      >
+                        <Camera className="w-3.5 h-3.5 mr-1 text-violet-400" />
+                        <span>Snapshot</span>
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        onClick={() => setIsVideoExportOpen(true)}
+                        className="h-7 text-xs bg-violet-600 hover:bg-violet-700 text-white px-3 rounded-lg shadow-sm"
+                      >
+                        <Film className="w-3.5 h-3.5 mr-1" />
+                        <span>Export</span>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           ) : (
             <div className="flex-1 p-4 sm:p-8 flex items-center justify-center">
               <div className="w-full max-w-2xl">
                 <ImageUploader
                   isDragging={isDragging}
                   error={error}
+                  isLoading={isLoading}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
@@ -294,10 +503,24 @@ export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) 
         </div>
       </div>
 
+      {/* Video Export Dialog Modal */}
+      {isVideoExportOpen && video && (
+        <VideoExportDialog
+          settings={settings}
+          video={video}
+          fileName={fileName}
+          onClose={() => setIsVideoExportOpen(false)}
+        />
+      )}
+
       {/* Keyboard Shortcut Hint on Desktop */}
-      {image && (
-        <div className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 text-[10px] sm:text-xs text-white/40 bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded-md pointer-events-none hidden md:block border border-white/5">
-          Press <kbd className="px-1 py-0.5 bg-white/10 rounded font-mono text-[9px]">Ctrl+S</kbd> to export high-res
+      {hasMedia && !isVideoExportOpen && (
+        <div className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 text-[10px] sm:text-xs text-white/40 bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded-md pointer-events-none hidden md:flex items-center gap-2 border border-white/5 z-20">
+          {mediaType === 'video' ? (
+            <span>Press <kbd className="px-1 py-0.5 bg-white/10 rounded font-mono text-[9px]">Space</kbd> to play/pause • <kbd className="px-1 py-0.5 bg-white/10 rounded font-mono text-[9px]">Ctrl+S</kbd> to export</span>
+          ) : (
+            <span>Press <kbd className="px-1 py-0.5 bg-white/10 rounded font-mono text-[9px]">Ctrl+S</kbd> to export high-res</span>
+          )}
         </div>
       )}
     </div>

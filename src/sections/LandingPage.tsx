@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { ArrowRight, Shield, Zap, Download, Code2, Palette, Sparkles, Upload, Sliders, Image as ImageIcon, Check } from 'lucide-react';
+import { ArrowRight, Shield, Zap, Download, Code2, Palette, Sparkles, Upload, Sliders, Image as ImageIcon, Check, Film } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import {
@@ -61,13 +61,13 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-white leading-tight mb-4 sm:mb-6">
-            Turn raw screenshots into{' '}
+            Turn raw screenshots & recordings into{' '}
             <span className="gradient-text">professional visuals.</span>
           </h1>
           
           <p className="text-base sm:text-xl text-gray-600 dark:text-gray-400 max-w-xl mx-auto mb-6 sm:mb-8 px-4 sm:px-0">
-            We beautify, not modify. Polish screenshots for Chrome Web Store, portfolios, 
-            and product pages instantly with macOS frames and 4K Retina export.
+            We beautify, not modify. Polish screenshots and screen recordings for Chrome Web Store, portfolios, 
+            and product demos with macOS frames, 4K Retina PNGs, and MP4 video export.
           </p>
 
           <Button 
@@ -88,6 +88,11 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
             <span className="flex items-center gap-1.5">
               <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500" />
               100% Private (No storage)
+            </span>
+            <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700" />
+            <span className="flex items-center gap-1.5">
+              <Film className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-violet-500" />
+              MP4 & WebM Support
             </span>
             <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700" />
             <span className="flex items-center gap-1.5">

@@ -160,19 +160,32 @@ export function drawMobileFrame(
 }
 
 /**
- * Main rendering function — draws background, device frame, and screenshot
+ * Main rendering function — draws background, device frame, and screenshot/video frame
  * onto any 2D canvas context.
  *
  * For high-res export, apply `ctx.scale(factor, factor)` before calling
  * and pass the logical (unscaled) canvas dimensions.
+ *
+ * Accepts either an HTMLImageElement (screenshot) or HTMLVideoElement (screen recording).
+ * Canvas 2D drawImage natively accepts both types.
  */
 export function renderToCanvas(
   ctx: CanvasRenderingContext2D,
   canvasWidth: number,
   canvasHeight: number,
   settings: CanvasSettings,
-  image: HTMLImageElement | null
+  image: HTMLImageElement | null,
+  video?: HTMLVideoElement | null
 ): void {
+  // Determine the active media source (image or current video frame)
+  const media: HTMLImageElement | HTMLVideoElement | null = image || video || null;
+  const mediaWidth = media
+    ? ('naturalWidth' in media ? media.naturalWidth : media.videoWidth)
+    : 0;
+  const mediaHeight = media
+    ? ('naturalHeight' in media ? media.naturalHeight : media.videoHeight)
+    : 0;
+
   // Enable high-quality image interpolation
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
@@ -196,17 +209,17 @@ export function renderToCanvas(
     gradient.addColorStop(1, settings.gradientEnd);
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-  } else if (settings.backgroundType === 'blurred' && image) {
+  } else if (settings.backgroundType === 'blurred' && media) {
     ctx.save();
     ctx.filter = `blur(${settings.blurAmount}px)`;
     const bgScale = Math.max(
-      canvasWidth / image.naturalWidth,
-      canvasHeight / image.naturalHeight
+      canvasWidth / mediaWidth,
+      canvasHeight / mediaHeight
     );
-    const drawWidth = image.naturalWidth * bgScale;
-    const drawHeight = image.naturalHeight * bgScale;
+    const drawWidth = mediaWidth * bgScale;
+    const drawHeight = mediaHeight * bgScale;
     ctx.drawImage(
-      image,
+      media,
       (canvasWidth - drawWidth) / 2,
       (canvasHeight - drawHeight) / 2,
       drawWidth,
@@ -218,7 +231,7 @@ export function renderToCanvas(
     ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
   } else {
-    // Fallback gradient (blurred mode without image)
+    // Fallback gradient (blurred mode without media)
     const gradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
     gradient.addColorStop(0, settings.gradientStart);
     gradient.addColorStop(1, settings.gradientEnd);
@@ -226,8 +239,8 @@ export function renderToCanvas(
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
   }
 
-  // --- Screenshot + Frame ----------------------------------------------------
-  if (!image) return;
+  // --- Screenshot / Video Frame + Device Chrome --------------------------------
+  if (!media || mediaWidth <= 0 || mediaHeight <= 0) return;
 
   const padding = settings.padding;
   const maxContentWidth = Math.max(10, canvasWidth - padding * 2);
@@ -240,14 +253,14 @@ export function renderToCanvas(
 
   const availableHeight = Math.max(10, maxContentHeight - frameOffset);
 
-  // Scale image to fit within available area (preserving aspect ratio)
+  // Scale media to fit within available area (preserving aspect ratio)
   const imgScale = Math.min(
-    maxContentWidth / image.naturalWidth,
-    availableHeight / image.naturalHeight
+    maxContentWidth / mediaWidth,
+    availableHeight / mediaHeight
   );
 
-  const imageWidth = Math.round(image.naturalWidth * imgScale);
-  const imageHeight = Math.round(image.naturalHeight * imgScale);
+  const imageWidth = Math.round(mediaWidth * imgScale);
+  const imageHeight = Math.round(mediaHeight * imgScale);
 
   const frameWidth = imageWidth;
   const frameHeight = imageHeight + frameOffset;
@@ -322,7 +335,7 @@ export function renderToCanvas(
       break;
   }
 
-  // Screenshot image
+  // Screenshot / video frame
   const imageX = frameX + (frameWidth - imageWidth) / 2;
   const imageY =
     frameY + contentOffset + (frameHeight - contentOffset - imageHeight) / 2;
@@ -339,10 +352,10 @@ export function renderToCanvas(
       settings.cornerRadius
     );
     ctx.clip();
-    ctx.drawImage(image, imageX, imageY, imageWidth, imageHeight);
+    ctx.drawImage(media, imageX, imageY, imageWidth, imageHeight);
     ctx.restore();
   } else {
-    ctx.drawImage(image, imageX, imageY, imageWidth, imageHeight);
+    ctx.drawImage(media, imageX, imageY, imageWidth, imageHeight);
   }
 }
 

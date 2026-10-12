@@ -1,16 +1,20 @@
-import { memo, useRef, useEffect, useState, useMemo } from 'react';
+import { memo, useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import type { CanvasSettings } from '@/types';
 import { renderToCanvas } from '@/lib/canvasRenderer';
 
 interface CanvasPreviewProps {
   settings: CanvasSettings;
-  image: HTMLImageElement | null;
+  image?: HTMLImageElement | null;
+  video?: HTMLVideoElement | null;
+  isPlaying?: boolean;
   onCanvasRef: (canvas: HTMLCanvasElement | null) => void;
 }
 
 export const CanvasPreview = memo(function CanvasPreview({
   settings,
-  image,
+  image = null,
+  video = null,
+  isPlaying = false,
   onCanvasRef,
 }: CanvasPreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -59,20 +63,57 @@ export const CanvasPreview = memo(function CanvasPreview({
     return Math.min(scaleX, scaleY, 1);
   }, [containerSize, settings.width, settings.height]);
 
-  // Render canvas whenever settings or image change
-  useEffect(() => {
+  const renderCurrent = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas dimensions
     canvas.width = settings.width;
     canvas.height = settings.height;
 
-    renderToCanvas(ctx, settings.width, settings.height, settings, image);
-  }, [settings, image]);
+    renderToCanvas(ctx, settings.width, settings.height, settings, image, video);
+  }, [settings, image, video]);
+
+  // Render canvas whenever settings, image, or video change
+  useEffect(() => {
+    renderCurrent();
+  }, [renderCurrent]);
+
+  // When video is playing, repainting every animation frame
+  useEffect(() => {
+    if (!video || !isPlaying) return;
+
+    let animId: number;
+    const loop = () => {
+      renderCurrent();
+      animId = requestAnimationFrame(loop);
+    };
+    animId = requestAnimationFrame(loop);
+
+    return () => {
+      cancelAnimationFrame(animId);
+    };
+  }, [video, isPlaying, renderCurrent]);
+
+  // When video is paused but scrubbed/seeked, re-render current video frame
+  useEffect(() => {
+    if (!video) return;
+
+    const handleUpdate = () => {
+      if (!isPlaying) {
+        renderCurrent();
+      }
+    };
+
+    video.addEventListener('seeked', handleUpdate);
+    video.addEventListener('timeupdate', handleUpdate);
+
+    return () => {
+      video.removeEventListener('seeked', handleUpdate);
+      video.removeEventListener('timeupdate', handleUpdate);
+    };
+  }, [video, isPlaying, renderCurrent]);
 
   const displayWidth = Math.round(settings.width * scale);
   const displayHeight = Math.round(settings.height * scale);

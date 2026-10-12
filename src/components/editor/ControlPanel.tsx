@@ -26,7 +26,7 @@ interface ControlPanelProps {
   onReset: () => void;
   isOpen: boolean;
   onClose: () => void;
-  image?: HTMLImageElement | null;
+  image?: HTMLImageElement | HTMLVideoElement | null;
 }
 
 const FRAME_OPTIONS = [
@@ -61,6 +61,8 @@ export const ControlPanel = memo(function ControlPanel({
 
   const handleMatchScreenshot = useCallback(() => {
     if (!image) return;
+    const mediaWidth = 'naturalWidth' in image ? image.naturalWidth : image.videoWidth;
+    const mediaHeight = 'naturalHeight' in image ? image.naturalHeight : image.videoHeight;
     const padding = settings.padding || 40;
     let frameOffset = 0;
     if (settings.frameType === 'browser') frameOffset = 32;
@@ -68,8 +70,8 @@ export const ControlPanel = memo(function ControlPanel({
 
     onSettingsChange({
       ...settings,
-      width: Math.round(image.naturalWidth + padding * 2),
-      height: Math.round(image.naturalHeight + padding * 2 + frameOffset),
+      width: Math.round(mediaWidth + padding * 2),
+      height: Math.round(mediaHeight + padding * 2 + frameOffset),
     });
   }, [image, settings, onSettingsChange]);
 
@@ -113,10 +115,11 @@ export const ControlPanel = memo(function ControlPanel({
         >
           <span className="flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-[hsl(245,79%,65%)]" />
-            Match Screenshot (100% Native)
+            Match Media (100% Native)
           </span>
           <span className="text-[11px] text-white/50">
-            {image.naturalWidth}×{image.naturalHeight}
+            {'naturalWidth' in image ? image.naturalWidth : image.videoWidth}×
+            {'naturalHeight' in image ? image.naturalHeight : image.videoHeight}
           </span>
         </button>
       )}

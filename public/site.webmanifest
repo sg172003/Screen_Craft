@@ -1,16 +1,25 @@
 {
-  "name": "ScreenCraft — Screenshot Mockup Generator",
+  "id": "/",
+  "name": "ScreenCraft — Screenshot & Screen Recording Mockup Generator",
   "short_name": "ScreenCraft",
-  "description": "Turn raw screenshots into professional visuals with device frames, gradients, and 4K Retina export.",
+  "description": "Turn raw screenshots and screen recordings into professional visuals with device frames, gradients, and 4K Retina export. 100% free, client-side & privacy-first.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0b0f19",
   "theme_color": "#4f46e5",
+  "categories": ["design", "productivity", "utilities"],
   "icons": [
     {
       "src": "/logo.png",
       "sizes": "256x256",
       "type": "image/png"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
