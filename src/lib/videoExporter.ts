@@ -19,11 +19,12 @@ function getMimeType(format: VideoExportFormat): string | null {
   if (typeof MediaRecorder === 'undefined') return null;
 
   if (format === 'mp4') {
-    // Chrome 114+ supports MP4 muxing in MediaRecorder
+    // Leave the AVC profile and level to the browser. A fixed level-3 profile
+    // reports as supported on some browsers but cannot encode 3x canvases.
     const mp4Types = [
-      'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
-      'video/mp4;codecs=avc1',
       'video/mp4',
+      'video/mp4;codecs=avc1,mp4a.40.2',
+      'video/mp4;codecs=avc1',
     ];
     for (const type of mp4Types) {
       if (MediaRecorder.isTypeSupported(type)) return type;
@@ -51,6 +52,13 @@ function getMimeType(format: VideoExportFormat): string | null {
 function getFileExtension(mimeType: string): string {
   if (mimeType.startsWith('video/mp4')) return 'mp4';
   return 'webm';
+}
+
+function normalizeRecordingError(error: unknown): Error {
+  if (error instanceof DOMException && ['NotSupportedError', 'UnknownError', 'QuotaExceededError'].includes(error.name)) {
+    return new Error('The browser could not encode video at this output size. Try WebM or reduce the export scale.');
+  }
+  return error instanceof Error ? error : new Error('Video export failed.');
 }
 
 /**
@@ -340,7 +348,10 @@ export function exportVideo(
         }
         resolve({ blob, extension });
       };
-      recorder.onerror = () => fail(new Error('Video recording failed.'));
+      recorder.onerror = (event) => {
+        const recorderError = (event as Event & { error?: DOMException }).error;
+        fail(normalizeRecordingError(recorderError ?? new Error('Video recording failed.')));
+      };
       video.addEventListener('ended', handleEnded, { once: true });
       video.addEventListener('error', handleVideoError, { once: true });
 
@@ -362,7 +373,7 @@ export function exportVideo(
     };
 
     void start().catch((err: unknown) => {
-      fail(err instanceof Error ? err : new Error('Video export failed.'));
+      fail(normalizeRecordingError(err));
     });
   });
 }
