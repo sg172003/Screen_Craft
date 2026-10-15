@@ -58,7 +58,7 @@ function AppContent() {
       </Suspense>
 
       {/* PWA Install Modal (Downloadable popup, cancelable with snooze support) */}
-      <PWAInstallModal pwa={pwa} />
+      {!showEditor && <PWAInstallModal pwa={pwa} />}
     </>
   );
 }

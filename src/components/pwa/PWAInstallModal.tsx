@@ -13,17 +13,34 @@ export const PWAInstallModal = memo(function PWAInstallModal({ pwa }: PWAInstall
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Show modal after a short delay so it doesn't block first paint
+  // Ask only after visitors engage with the landing page, then give them time to explore.
   useEffect(() => {
     if (pwa.isInstalled || pwa.isDismissed) return;
     if (!pwa.isInstallable && !pwa.isIOS) return;
 
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-      trackPWAPromptShown();
-    }, 3000);
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const showPrompt = () => {
+      if (timer) return;
+      timer = setTimeout(() => {
+        setIsVisible(true);
+        trackPWAPromptShown();
+      }, 20000);
+      window.removeEventListener('pointerdown', onEngage);
+      window.removeEventListener('keydown', onEngage);
+      window.removeEventListener('scroll', onEngage);
+    };
+    const onEngage = () => showPrompt();
 
-    return () => clearTimeout(timer);
+    window.addEventListener('pointerdown', onEngage, { once: true, passive: true });
+    window.addEventListener('keydown', onEngage, { once: true });
+    window.addEventListener('scroll', onEngage, { once: true, passive: true });
+
+    return () => {
+      if (timer) clearTimeout(timer);
+      window.removeEventListener('pointerdown', onEngage);
+      window.removeEventListener('keydown', onEngage);
+      window.removeEventListener('scroll', onEngage);
+    };
   }, [pwa.isInstallable, pwa.isIOS, pwa.isInstalled, pwa.isDismissed]);
 
   if (!isVisible || pwa.isInstalled || pwa.isDismissed) return null;

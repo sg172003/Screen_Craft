@@ -1,7 +1,8 @@
-import { memo } from 'react';
-import { ArrowRight, Shield, Zap, Download, Code2, Palette, Sparkles, Upload, Sliders, Image as ImageIcon, Check, Film } from 'lucide-react';
+import { memo, useEffect, useRef } from 'react';
+import { ArrowRight, Shield, Zap, Download, Upload, Sliders, Image as ImageIcon, Check, Film } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { renderToCanvas } from '@/lib/canvasRenderer';
 import {
   Accordion,
   AccordionItem,
@@ -13,15 +14,104 @@ interface LandingPageProps {
   onStartCrafting: () => void;
 }
 
+const DEMO_SCREENSHOT = `data:image/svg+xml,${encodeURIComponent(`
+  <svg xmlns="http://www.w3.org/2000/svg" width="960" height="480" viewBox="0 0 960 480">
+    <rect width="960" height="480" fill="#f8fafc"/>
+    <rect width="960" height="64" fill="#ffffff"/>
+    <rect x="48" y="22" width="26" height="20" rx="6" fill="#4f46e5"/>
+    <path d="M56 36l5-9 5 9" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="88" y="25" width="118" height="12" rx="6" fill="#111827"/>
+    <rect x="700" y="27" width="62" height="9" rx="4" fill="#94a3b8"/>
+    <rect x="784" y="27" width="54" height="9" rx="4" fill="#94a3b8"/>
+    <rect x="860" y="17" width="58" height="30" rx="8" fill="#4f46e5"/>
+    <rect y="64" width="960" height="416" fill="#eef2ff"/>
+    <rect x="56" y="126" width="400" height="18" rx="9" fill="#4f46e5" opacity=".16"/>
+    <rect x="56" y="170" width="510" height="42" rx="10" fill="#111827"/>
+    <rect x="56" y="222" width="350" height="42" rx="10" fill="#111827"/>
+    <rect x="56" y="286" width="400" height="13" rx="6" fill="#64748b"/>
+    <rect x="56" y="310" width="350" height="13" rx="6" fill="#94a3b8"/>
+    <rect x="56" y="354" width="148" height="44" rx="10" fill="#4f46e5"/>
+    <rect x="226" y="369" width="112" height="12" rx="6" fill="#64748b"/>
+    <rect x="618" y="112" width="286" height="284" rx="24" fill="#fff"/>
+    <rect x="646" y="140" width="230" height="120" rx="16" fill="#c7d2fe"/>
+    <circle cx="762" cy="200" r="34" fill="#4f46e5" opacity=".82"/>
+    <path d="M750 183l29 17-29 17z" fill="#fff"/>
+    <rect x="646" y="284" width="180" height="13" rx="6" fill="#1e293b"/>
+    <rect x="646" y="309" width="230" height="9" rx="4" fill="#cbd5e1"/>
+    <rect x="646" y="328" width="198" height="9" rx="4" fill="#e2e8f0"/>
+    <rect x="646" y="356" width="90" height="22" rx="7" fill="#e0e7ff"/>
+  </svg>
+`)}`;
+
+function ComparisonDemo() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const screenshot = new Image();
+    screenshot.onload = () => {
+      const canvas = canvasRef.current;
+      const context = canvas?.getContext('2d');
+      if (!canvas || !context) return;
+
+      const settings = {
+        width: 960,
+        height: 560,
+        padding: 40,
+        cornerRadius: 14,
+        shadowIntensity: 20,
+        shadowEnabled: true,
+        backgroundType: 'gradient' as const,
+        backgroundColor: '#ffffff',
+        gradientStart: '#3b82f6',
+        gradientEnd: '#8b5cf6',
+        gradientDirection: 135,
+        blurAmount: 20,
+        frameType: 'browser' as const,
+        frameDarkMode: false,
+        exportScale: 1,
+      };
+
+      canvas.width = settings.width;
+      canvas.height = settings.height;
+      renderToCanvas(context, settings.width, settings.height, settings, screenshot);
+    };
+    screenshot.src = DEMO_SCREENSHOT;
+  }, []);
+
+  return (
+    <section aria-label="Before and after screenshot example" className="py-12 sm:py-20 px-4 sm:px-6 bg-gray-50 dark:bg-gray-800 transition-colors">
+      <div className="max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-6 sm:gap-8 items-center">
+          <div className="space-y-3 sm:space-y-4">
+            <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">Original screenshot</p>
+            <div className="aspect-[12/7] bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-600">
+              <img src={DEMO_SCREENSHOT} alt="Original product page screenshot without a device frame" width="960" height="480" className="w-full h-full object-cover" />
+            </div>
+          </div>
+          <div className="space-y-3 sm:space-y-4">
+            <p className="text-xs sm:text-sm font-medium text-[hsl(245,79%,55%)]">ScreenCraft result</p>
+            <div className="aspect-[12/7] rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden bg-gradient-to-br from-blue-500 to-violet-500">
+              <canvas ref={canvasRef} aria-label="ScreenCraft rendered browser frame on a gradient background" className="w-full h-full object-contain" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export const LandingPage = memo(function LandingPage({ onStartCrafting }: LandingPageProps) {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[110] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-gray-900 focus:shadow-lg">
+        Skip to content
+      </a>
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="logo-wrap" tabIndex={-1}>
-              <img src="/logo.png" alt="ScreenCraft Logo" className="logo-glow w-7 h-7 sm:w-8 sm:h-8" />
+              <img src="/logo.png" alt="" width="32" height="32" className="logo-glow w-7 h-7 sm:w-8 sm:h-8" />
             </span>
             <span className="font-semibold text-gray-900 dark:text-white text-base sm:text-lg">ScreenCraft</span>
           </div>
@@ -57,10 +147,11 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
         </div>
       </nav>
 
+      <main id="main-content" tabIndex={-1}>
       {/* Hero Section */}
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-white leading-tight mb-4 sm:mb-6">
+          <h1 className="text-balance text-3xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-white leading-tight mb-4 sm:mb-6">
             Turn raw screenshots & recordings into{' '}
             <span className="gradient-text">professional visuals.</span>
           </h1>
@@ -87,7 +178,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
             <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700" />
             <span className="flex items-center gap-1.5">
               <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500" />
-              100% Private (No storage)
+              No media uploads
             </span>
             <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700" />
             <span className="flex items-center gap-1.5">
@@ -103,69 +194,10 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
         </div>
       </section>
 
-      {/* Before/After Comparison */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gray-50 dark:bg-gray-800 transition-colors">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-6 sm:gap-8 items-center">
-            {/* Before */}
-            <div className="space-y-3 sm:space-y-4">
-              <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Raw Screenshot</p>
-              <div className="bg-white dark:bg-gray-700 rounded-xl sm:rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-600 card-hover relative">
-                <div className="bg-gray-100 dark:bg-gray-600 p-3 sm:p-4">
-                  <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
-                    <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-400" />
-                    <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-400" />
-                    <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-400" />
-                  </div>
-                  <div className="bg-white dark:bg-gray-700 rounded-lg p-3 sm:p-4 shadow-sm">
-                    <div className="h-3 sm:h-4 w-24 sm:w-32 bg-gray-200 dark:bg-gray-600 rounded mb-2 sm:mb-3" />
-                    <div className="h-2.5 sm:h-3 w-full bg-gray-100 dark:bg-gray-600 rounded mb-1.5 sm:mb-2" />
-                    <div className="h-2.5 sm:h-3 w-4/5 bg-gray-100 dark:bg-gray-600 rounded mb-1.5 sm:mb-2" />
-                    <div className="h-2.5 sm:h-3 w-3/5 bg-gray-100 dark:bg-gray-600 rounded" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* After */}
-            <div className="space-y-3 sm:space-y-4">
-              <p className="text-xs sm:text-sm font-medium text-[hsl(245,79%,55%)] uppercase tracking-wider">ScreenCraft Polish</p>
-              <div 
-                className="rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden card-hover relative"
-                style={{
-                  background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)',
-                  padding: '24px',
-                }}
-              >
-                <div 
-                  className="bg-white dark:bg-gray-700 rounded-lg sm:rounded-xl shadow-xl overflow-hidden"
-                  style={{
-                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-                  }}
-                >
-                  <div className="bg-gray-50 dark:bg-gray-600 px-2 sm:px-3 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-2 border-b border-gray-100 dark:border-gray-600">
-                    <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-red-400" />
-                    <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-yellow-400" />
-                    <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-green-400" />
-                    <div className="flex-1 mx-2 sm:mx-3">
-                      <div className="bg-white dark:bg-gray-700 rounded-md h-4 sm:h-5 w-full border border-gray-200 dark:border-gray-600" />
-                    </div>
-                  </div>
-                  <div className="p-3 sm:p-4">
-                    <div className="h-3 sm:h-4 w-24 sm:w-32 bg-gray-200 dark:bg-gray-600 rounded mb-2 sm:mb-3" />
-                    <div className="h-2.5 sm:h-3 w-full bg-gray-100 dark:bg-gray-600 rounded mb-1.5 sm:mb-2" />
-                    <div className="h-2.5 sm:h-3 w-4/5 bg-gray-100 dark:bg-gray-600 rounded mb-1.5 sm:mb-2" />
-                    <div className="h-2.5 sm:h-3 w-3/5 bg-gray-100 dark:bg-gray-600 rounded" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ComparisonDemo />
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-16 sm:py-24 px-4 sm:px-6 dark:bg-gray-900">
+      <section id="how-it-works" className="py-16 sm:py-24 px-4 sm:px-6 dark:bg-gray-900 scroll-mt-20">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
@@ -198,13 +230,13 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
 
             {/* Step 2 */}
             <div className="relative text-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/25">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/25">
                 <Sliders className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
               <div className="hidden sm:block absolute top-8 left-[60%] w-full">
-                <div className="h-0.5 bg-gradient-to-r from-purple-500/50 to-pink-500/50 w-1/2" />
+                <div className="h-0.5 bg-gradient-to-r from-indigo-500/50 to-violet-500/50 w-1/2" />
               </div>
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 text-xs font-semibold mb-3">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 text-xs font-semibold mb-3">
                 2
               </span>
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -217,10 +249,10 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
 
             {/* Step 3 */}
             <div className="text-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl flex items-center justify-center shadow-lg shadow-pink-500/25">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg shadow-violet-500/25">
                 <ImageIcon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-pink-100 dark:bg-pink-900/50 text-pink-600 dark:text-pink-400 text-xs font-semibold mb-3">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400 text-xs font-semibold mb-3">
                 3
               </span>
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -234,49 +266,8 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
         </div>
       </section>
 
-      {/* Features */}
-      <section id="features" className="py-16 sm:py-20 px-4 sm:px-6 bg-gray-50 dark:bg-gray-800 transition-colors">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 dark:text-white mb-10 sm:mb-12">
-            Built for creators & makers
-          </h2>
-          
-          <div className="grid sm:grid-cols-3 gap-6 sm:gap-8">
-            <div className="text-center p-4 sm:p-6 bg-white dark:bg-gray-700 rounded-xl shadow-sm card-hover relative overflow-hidden">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
-                <Code2 className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
-              </div>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-1.5 sm:mb-2">Developers</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Create polished screenshots for GitHub repos, documentation, Readmes, and technical blogs.
-              </p>
-            </div>
-
-            <div className="text-center p-4 sm:p-6 bg-white dark:bg-gray-700 rounded-xl shadow-sm card-hover relative overflow-hidden">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 bg-purple-50 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
-                <Palette className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" />
-              </div>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-1.5 sm:mb-2">Designers</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Showcase your portfolio designs with authentic device chrome, gradients, and custom shadows.
-              </p>
-            </div>
-
-            <div className="text-center p-4 sm:p-6 bg-white dark:bg-gray-700 rounded-xl shadow-sm card-hover relative overflow-hidden">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 bg-pink-50 dark:bg-pink-900/30 rounded-xl flex items-center justify-center">
-                <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-pink-500" />
-              </div>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-1.5 sm:mb-2">Product Builders</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Ideal for Chrome Web Store marquees, Product Hunt badges, and social media announcements.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features List */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 dark:bg-gray-900">
+      {/* Features and privacy */}
+      <section id="features" className="py-16 sm:py-20 px-4 sm:px-6 dark:bg-gray-900 scroll-mt-20">
         <div className="max-w-4xl mx-auto">
           <div className="grid sm:grid-cols-2 gap-8 sm:gap-12">
             <div>
@@ -285,12 +276,10 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
               </h3>
               <ul className="space-y-3 sm:space-y-4">
                 {[
-                  '100% native resolution matching (zero compression)',
-                  'Presets for Chrome Web Store, Twitter/X, and Instagram',
-                  'Device frames: Browser, Desktop, Smartphone',
-                  'Gradient, solid color, and blurred background effects',
-                  'Adjustable padding, corner radius, and drop shadow',
-                  '2x Retina and 3x Ultra HD PNG export with 1-click clipboard copy',
+                  'Preserve native resolution; export at 1x, 2x, or 3x',
+                  'Add browser, desktop, or phone frames',
+                  'Choose a preset, background, padding, and shadow',
+                  'Export PNGs or copy them to your clipboard',
                 ].map((feature, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <Check className="w-5 h-5 text-green-500 mt-0.5 shrink-0" />
@@ -306,12 +295,10 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
               </h3>
               <ul className="space-y-3 sm:space-y-4">
                 {[
-                  '100% client-side HTML5 canvas processing',
-                  'No images uploaded to any cloud server',
-                  'No account or email registration required',
-                  'No tracking cookies or analytics scripts',
-                  'Open source under permissive MIT license',
-                  'Works completely offline once loaded',
+                  'Images and videos are processed in your browser',
+                  'Media is never uploaded; no account is needed',
+                  'Optional usage analytics never include media content',
+                  'Works offline after the first visit',
                 ].map((feature, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <Check className="w-5 h-5 text-green-500 mt-0.5 shrink-0" />
@@ -324,27 +311,15 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
         </div>
       </section>
 
-      {/* Privacy Note */}
-      <section className="py-12 sm:py-16 px-4 sm:px-6 bg-gray-900 dark:bg-gray-950 text-white">
-        <div className="max-w-3xl mx-auto text-center">
-          <Shield className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 text-emerald-400" />
-          <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Privacy Guaranteed</h2>
-          <p className="text-gray-400 max-w-lg mx-auto text-sm sm:text-base">
-            ScreenCraft runs entirely inside your browser. Your screenshots never leave your machine. 
-            Zero uploads, zero telemetry, zero storage.
-          </p>
-        </div>
-      </section>
-
       {/* FAQ Section (Crucial for SEO Rich Snippets) */}
-      <section id="faq" className="py-16 sm:py-24 px-4 sm:px-6 bg-gray-50 dark:bg-gray-800/60 transition-colors">
+      <section id="faq" className="py-16 sm:py-24 px-4 sm:px-6 bg-gray-50 dark:bg-gray-800/60 transition-colors scroll-mt-20">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10 sm:mb-14">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
               Frequently Asked Questions
             </h2>
             <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400">
-              Everything you need to know about the ScreenCraft screenshot mockup editor
+              A few quick answers about ScreenCraft
             </p>
           </div>
 
@@ -354,7 +329,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
                 How do I create mockups for the Chrome Web Store?
               </AccordionTrigger>
               <AccordionContent className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                ScreenCraft includes built-in presets conforming to Google Chrome Web Store specifications: Marquee Promo (1400×560px) and Standard Screenshot (1280×800px). Select the preset in the canvas controls to automatically format your extension screenshot.
+                Choose a Chrome Web Store preset in the editor to size your canvas for a marquee or store screenshot.
               </AccordionContent>
             </AccordionItem>
 
@@ -363,7 +338,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
                 Does ScreenCraft compress or reduce my screenshot quality?
               </AccordionTrigger>
               <AccordionContent className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                No. ScreenCraft preserves 100% of the native screenshot resolution with zero downscaling. When exporting, you can choose 1x, 2x Retina HD, or 3x Ultra HD offscreen rendering for razor-sharp text and borders.
+                Your source is kept at its native resolution. Choose 1x, 2x, or 3x when exporting a PNG.
               </AccordionContent>
             </AccordionItem>
 
@@ -372,7 +347,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
                 Are my screenshots private and secure?
               </AccordionTrigger>
               <AccordionContent className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                Yes, 100%. ScreenCraft processes images purely on the client side using HTML5 Canvas. Your images are never transmitted over the network or saved to any database.
+                Your images and videos stay in your browser and are never uploaded. Optional usage analytics can measure feature use, but do not include media content.
               </AccordionContent>
             </AccordionItem>
 
@@ -385,23 +360,6 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-5" className="bg-white dark:bg-gray-700/80 rounded-xl px-4 sm:px-6 border border-gray-200 dark:border-gray-600 shadow-xs">
-              <AccordionTrigger className="text-base font-semibold text-gray-900 dark:text-white hover:no-underline">
-                Which device frames and canvas presets are available?
-              </AccordionTrigger>
-              <AccordionContent className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                ScreenCraft features macOS Safari-style browser windows, desktop window frames, and smartphone bezels with notch (all supporting Light and Dark themes). Presets include Chrome Web Store, Twitter/X, Instagram, LinkedIn, Dribbble, Product Hunt, 1080p, and 4K UHD.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-6" className="bg-white dark:bg-gray-700/80 rounded-xl px-4 sm:px-6 border border-gray-200 dark:border-gray-600 shadow-xs">
-              <AccordionTrigger className="text-base font-semibold text-gray-900 dark:text-white hover:no-underline">
-                Is ScreenCraft free for commercial use?
-              </AccordionTrigger>
-              <AccordionContent className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                Yes. ScreenCraft is completely free and open-source under the MIT license. You can use all exported images in commercial websites, marketing materials, and store listings without watermarks.
-              </AccordionContent>
-            </AccordionItem>
           </Accordion>
         </div>
       </section>
@@ -425,12 +383,13 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
           </Button>
         </div>
       </section>
+      </main>
 
       {/* Footer */}
       <footer className="py-6 sm:py-8 px-4 sm:px-6 border-t border-gray-100 dark:border-gray-800 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="ScreenCraft Logo" className="w-5 h-5 sm:w-6 sm:h-6" />
+            <img src="/logo.png" alt="" width="24" height="24" className="w-5 h-5 sm:w-6 sm:h-6" />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">ScreenCraft</span>
           </div>
           <div className="flex items-center gap-4 text-xs text-gray-500">

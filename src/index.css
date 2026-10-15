@@ -80,7 +80,14 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: "Segoe UI Variable", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
   }
 }
 
@@ -220,6 +227,21 @@ input[type="range"]::-webkit-slider-thumb:hover {
   /* Dark-mode tweak */
   .dark .logo-glow {
     box-shadow: 0 6px 20px hsl(var(--sc-primary) / 0.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
