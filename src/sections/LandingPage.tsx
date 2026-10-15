@@ -174,7 +174,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-16 sm:py-24 px-4 sm:px-6 dark:bg-gray-900 scroll-mt-20">
+      <section id="how-it-works" className="relative border-t border-gray-200/80 bg-gray-50/60 py-16 px-4 shadow-[0_-14px_32px_-26px_rgba(15,23,42,0.35)] scroll-mt-20 dark:border-gray-700/80 dark:bg-gray-900 dark:shadow-[0_-14px_32px_-26px_rgba(0,0,0,0.7)] sm:py-24 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
