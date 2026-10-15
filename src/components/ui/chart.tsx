@@ -47,7 +47,8 @@ function ChartContainer({
   >["children"]
 }) {
   const uniqueId = React.useId()
-  const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`
+  const requestedId = id || uniqueId
+  const chartId = `chart-${requestedId.replace(/[^a-zA-Z0-9_-]/g, "") || uniqueId.replace(/:/g, "")}`
 
   return (
     <ChartContext.Provider value={{ config }}>
@@ -78,27 +79,28 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     return null
   }
 
-  return (
-    <style
-      dangerouslySetInnerHTML={{
-        __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
+  const styleRules = Object.entries(THEMES)
+    .map(
+      ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
 ${colorConfig
   .map(([key, itemConfig]) => {
+    if (!/^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(key)) return null
     const color =
       itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
       itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
+    return color && CSS.supports("color", color)
+      ? `  --color-${key}: ${color};`
+      : null
   })
   .join("\n")}
 }
 `
-          )
-          .join("\n"),
-      }}
-    />
+    )
+    .join("\n")
+
+  return (
+    <style>{styleRules}</style>
   )
 }
 
