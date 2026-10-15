@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef } from 'react';
-import { ArrowRight, Shield, Zap, Download, Upload, Sliders, Image as ImageIcon, Check, Film } from 'lucide-react';
+import { ArrowRight, Upload, Sliders, Image as ImageIcon, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { renderToCanvas } from '@/lib/canvasRenderer';
@@ -157,8 +157,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
           </h1>
           
           <p className="text-base sm:text-xl text-gray-600 dark:text-gray-400 max-w-xl mx-auto mb-6 sm:mb-8 px-4 sm:px-0">
-            We beautify, not modify. Polish screenshots and screen recordings for Chrome Web Store, portfolios, 
-            and product demos with macOS frames, 4K Retina PNGs, and MP4 video export.
+            We beautify, not modify.
           </p>
 
           <Button 
@@ -170,31 +169,8 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
             <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
           </Button>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 mt-6 sm:mt-8 text-xs sm:text-sm text-gray-500 dark:text-gray-500">
-            <span className="flex items-center gap-1.5">
-              <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[hsl(245,79%,55%)]" />
-              Client-side
-            </span>
-            <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700" />
-            <span className="flex items-center gap-1.5">
-              <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500" />
-              No media uploads
-            </span>
-            <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700" />
-            <span className="flex items-center gap-1.5">
-              <Film className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-violet-500" />
-              MP4 & WebM Support
-            </span>
-            <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700" />
-            <span className="flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500" />
-              Instant 4K Export
-            </span>
-          </div>
         </div>
       </section>
-
-      <ComparisonDemo />
 
       {/* How It Works Section */}
       <section id="how-it-works" className="py-16 sm:py-24 px-4 sm:px-6 dark:bg-gray-900 scroll-mt-20">
@@ -230,13 +206,13 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
 
             {/* Step 2 */}
             <div className="relative text-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/25">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/25">
                 <Sliders className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
               <div className="hidden sm:block absolute top-8 left-[60%] w-full">
-                <div className="h-0.5 bg-gradient-to-r from-indigo-500/50 to-violet-500/50 w-1/2" />
+                <div className="h-0.5 bg-gradient-to-r from-purple-500/50 to-pink-500/50 w-1/2" />
               </div>
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 text-xs font-semibold mb-3">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 text-xs font-semibold mb-3">
                 2
               </span>
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -249,10 +225,10 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
 
             {/* Step 3 */}
             <div className="text-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg shadow-violet-500/25">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl flex items-center justify-center shadow-lg shadow-pink-500/25">
                 <ImageIcon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400 text-xs font-semibold mb-3">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-pink-100 dark:bg-pink-900/50 text-pink-600 dark:text-pink-400 text-xs font-semibold mb-3">
                 3
               </span>
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -265,6 +241,8 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
           </div>
         </div>
       </section>
+
+      <ComparisonDemo />
 
       {/* Features and privacy */}
       <section id="features" className="py-16 sm:py-20 px-4 sm:px-6 dark:bg-gray-900 scroll-mt-20">
@@ -399,7 +377,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
             <a href="https://github.com/sg172003/Screen_Craft" target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition-colors">GitHub</a>
           </div>
           <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 text-center sm:text-right">
-            © 2026 ScreenCraft. Open source under MIT. <br />
+            © 2026 ScreenCraft. <br />
             <b>🚀 Author : Sarthak 😊 </b>
           </p>
         </div>
