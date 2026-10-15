@@ -83,15 +83,15 @@ function ComparisonDemo() {
       <div className="max-w-5xl mx-auto">
         <div className="grid md:grid-cols-2 gap-6 sm:gap-8 items-center">
           <div className="space-y-3 sm:space-y-4">
-            <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">Original screenshot</p>
-            <div className="aspect-[12/7] bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-600">
-              <img src={DEMO_SCREENSHOT} alt="Original product page screenshot without a device frame" width="960" height="480" className="w-full h-full object-cover" />
+            <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">Example screenshot</p>
+            <div className="aspect-[12/7] bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-600 card-hover">
+              <img src={DEMO_SCREENSHOT} alt="Sample product page before adding a browser frame" width="960" height="480" className="w-full h-full object-cover" />
             </div>
           </div>
           <div className="space-y-3 sm:space-y-4">
             <p className="text-xs sm:text-sm font-medium text-[hsl(245,79%,55%)]">ScreenCraft result</p>
-            <div className="aspect-[12/7] rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden bg-gradient-to-br from-blue-500 to-violet-500">
-              <canvas ref={canvasRef} aria-label="ScreenCraft rendered browser frame on a gradient background" className="w-full h-full object-contain" />
+            <div className="aspect-[12/7] rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden bg-gradient-to-br from-blue-500 to-violet-500 card-hover">
+              <canvas ref={canvasRef} aria-label="Sample screenshot with a browser frame and gradient background" className="w-full h-full object-contain" />
             </div>
           </div>
         </div>
@@ -180,14 +180,14 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
               How it works
             </h2>
             <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
-              Three simple steps to transform your screenshots into stunning graphics
+              Three simple steps to style screenshots and screen recordings
             </p>
           </div>
 
           <div className="grid sm:grid-cols-3 gap-8 sm:gap-6">
             {/* Step 1 */}
-            <div className="relative text-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/25">
+            <div className="relative text-center how-step">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/25 step-icon">
                 <Upload className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
               <div className="hidden sm:block absolute top-8 left-[60%] w-full">
@@ -197,16 +197,16 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
                 1
               </span>
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                Upload or Paste (Ctrl+V)
+              Upload or Paste (Ctrl/Cmd+V)
               </h3>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
-                Drag, drop, browse, or directly paste with Ctrl+V. Preserves 100% of native screenshot resolution.
+                Drop or browse for images and videos. Paste screenshots with Ctrl/Cmd+V; previews keep their aspect ratio.
               </p>
             </div>
 
             {/* Step 2 */}
-            <div className="relative text-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/25">
+            <div className="relative text-center how-step">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/25 step-icon">
                 <Sliders className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
               <div className="hidden sm:block absolute top-8 left-[60%] w-full">
@@ -224,18 +224,18 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
             </div>
 
             {/* Step 3 */}
-            <div className="text-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl flex items-center justify-center shadow-lg shadow-pink-500/25">
+            <div className="text-center how-step">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl flex items-center justify-center shadow-lg shadow-pink-500/25 step-icon">
                 <ImageIcon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
               <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-pink-100 dark:bg-pink-900/50 text-pink-600 dark:text-pink-400 text-xs font-semibold mb-3">
                 3
               </span>
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                Download 4K Retina PNG
+                Download or Copy a PNG
               </h3>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
-                Export crisp 2x or 3x high-resolution PNGs or copy straight to clipboard for instant sharing.
+                Choose 1x, 2x, or 3x output size, or copy the image to your clipboard.
               </p>
             </div>
           </div>
@@ -254,7 +254,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
               </h3>
               <ul className="space-y-3 sm:space-y-4">
                 {[
-                  'Preserve native resolution; export at 1x, 2x, or 3x',
+                  'Keep the original aspect ratio; export at 1x, 2x, or 3x',
                   'Add browser, desktop, or phone frames',
                   'Choose a preset, background, padding, and shadow',
                   'Export PNGs or copy them to your clipboard',
@@ -274,9 +274,9 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
               <ul className="space-y-3 sm:space-y-4">
                 {[
                   'Images and videos are processed in your browser',
-                  'Media is never uploaded; no account is needed',
-                  'Optional usage analytics never include media content',
-                  'Works offline after the first visit',
+                  'Image and video files are not uploaded; no account is needed',
+                  'Usage analytics can record app events, never media or filenames',
+                  'Can work offline after app assets are cached',
                 ].map((feature, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <Check className="w-5 h-5 text-green-500 mt-0.5 shrink-0" />
@@ -302,7 +302,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
           </div>
 
           <Accordion type="single" collapsible className="w-full space-y-3">
-            <AccordionItem value="item-1" className="bg-white dark:bg-gray-700/80 rounded-xl px-4 sm:px-6 border border-gray-200 dark:border-gray-600 shadow-xs">
+            <AccordionItem value="item-1" className="bg-white dark:bg-gray-700/80 rounded-xl px-4 sm:px-6 border border-gray-200 dark:border-gray-600 shadow-xs card-hover">
               <AccordionTrigger className="text-base font-semibold text-gray-900 dark:text-white hover:no-underline">
                 How do I create mockups for the Chrome Web Store?
               </AccordionTrigger>
@@ -311,30 +311,30 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-2" className="bg-white dark:bg-gray-700/80 rounded-xl px-4 sm:px-6 border border-gray-200 dark:border-gray-600 shadow-xs">
+            <AccordionItem value="item-2" className="bg-white dark:bg-gray-700/80 rounded-xl px-4 sm:px-6 border border-gray-200 dark:border-gray-600 shadow-xs card-hover">
               <AccordionTrigger className="text-base font-semibold text-gray-900 dark:text-white hover:no-underline">
-                Does ScreenCraft compress or reduce my screenshot quality?
+                Does ScreenCraft change my original file?
               </AccordionTrigger>
               <AccordionContent className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                Your source is kept at its native resolution. Choose 1x, 2x, or 3x when exporting a PNG.
+                No. Your original file stays unchanged. The preview may scale it proportionally to fit the canvas; PNG exports use the canvas dimensions and selected 1x, 2x, or 3x export scale.
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-3" className="bg-white dark:bg-gray-700/80 rounded-xl px-4 sm:px-6 border border-gray-200 dark:border-gray-600 shadow-xs">
+            <AccordionItem value="item-3" className="bg-white dark:bg-gray-700/80 rounded-xl px-4 sm:px-6 border border-gray-200 dark:border-gray-600 shadow-xs card-hover">
               <AccordionTrigger className="text-base font-semibold text-gray-900 dark:text-white hover:no-underline">
                 Are my screenshots private and secure?
               </AccordionTrigger>
               <AccordionContent className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                Your images and videos stay in your browser and are never uploaded. Optional usage analytics can measure feature use, but do not include media content.
+                Images and videos are processed in your browser and are not uploaded. Usage analytics can record app events, but never media or filenames.
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-4" className="bg-white dark:bg-gray-700/80 rounded-xl px-4 sm:px-6 border border-gray-200 dark:border-gray-600 shadow-xs">
+            <AccordionItem value="item-4" className="bg-white dark:bg-gray-700/80 rounded-xl px-4 sm:px-6 border border-gray-200 dark:border-gray-600 shadow-xs card-hover">
               <AccordionTrigger className="text-base font-semibold text-gray-900 dark:text-white hover:no-underline">
                 Can I paste screenshots directly from my clipboard?
               </AccordionTrigger>
               <AccordionContent className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                Yes! Press Ctrl+V (or Cmd+V on Mac) anywhere in the app after capturing a screenshot to import it instantly without needing to save a temporary file.
+                Yes. With ScreenCraft open, press Ctrl+V on Windows/Linux or Cmd+V on Mac to import an image from your clipboard without saving it first.
               </AccordionContent>
             </AccordionItem>
 
@@ -349,7 +349,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
             Ready to beautify your screenshots?
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6 sm:mb-8 text-sm sm:text-base">
-            Start crafting professional visuals in seconds. No signup required.
+            Open the editor and start creating. No signup required.
           </p>
           <Button 
             onClick={onStartCrafting}
@@ -377,7 +377,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
             <a href="https://github.com/sg172003/Screen_Craft" target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition-colors">GitHub</a>
           </div>
           <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 text-center sm:text-right">
-            © 2026 ScreenCraft. <br />
+            © {new Date().getFullYear()} ScreenCraft. <br />
             <b>🚀 Author : Sarthak 😊 </b>
           </p>
         </div>

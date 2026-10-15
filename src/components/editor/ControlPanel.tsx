@@ -77,7 +77,7 @@ export const ControlPanel = memo(function ControlPanel({
 
   const handlePresetChange = useCallback(
     (presetName: string) => {
-      if (presetName === 'Auto (Match Screenshot)') {
+      if (presetName === 'Auto (Match Media)') {
         handleMatchScreenshot();
         return;
       }
@@ -111,14 +111,14 @@ export const ControlPanel = memo(function ControlPanel({
         <button
           type="button"
           onClick={handleMatchScreenshot}
-          className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-[hsl(245,79%,55%)]/15 border border-[hsl(245,79%,55%)]/30 text-white hover:bg-[hsl(245,79%,55%)]/25 transition-all text-xs font-medium"
+          className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-[hsl(245,79%,55%)]/15 border border-[hsl(245,79%,55%)]/30 text-white hover:bg-[hsl(245,79%,55%)]/25 transition-[background-color] btn-hover text-xs font-medium"
         >
           <span className="flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-[hsl(245,79%,65%)]" />
-            Match Media (100% Native)
+            Fit Canvas Around Media
           </span>
           <span className="text-[11px] text-white/50">
-            {'naturalWidth' in image ? image.naturalWidth : image.videoWidth}×
+            Source: {'naturalWidth' in image ? image.naturalWidth : image.videoWidth}×
             {'naturalHeight' in image ? image.naturalHeight : image.videoHeight}
           </span>
         </button>
@@ -166,18 +166,18 @@ export const ControlPanel = memo(function ControlPanel({
       </div>
 
       <div className="pt-2 border-t border-white/5">
-        <Label className="text-xs text-white/50 mb-1.5 block">Export Scale (Resolution)</Label>
+        <Label className="text-xs text-white/50 mb-1.5 block">Export Scale</Label>
         <div className="grid grid-cols-3 gap-1.5">
           {[
-            { scale: 1, label: '1x Normal' },
-            { scale: 2, label: '2x Retina' },
-            { scale: 3, label: '3x Ultra HD' },
+            { scale: 1, label: '1×' },
+            { scale: 2, label: '2×' },
+            { scale: 3, label: '3×' },
           ].map((item) => (
             <button
               key={item.scale}
               type="button"
               onClick={() => updateSetting('exportScale', item.scale)}
-              className={`py-1.5 px-2 text-xs rounded-md border font-medium transition-all ${
+              className={`py-1.5 px-2 text-xs rounded-md border font-medium transition-[background-color,border-color,color] btn-hover ${
                 (settings.exportScale || 2) === item.scale
                   ? 'bg-[hsl(245,79%,55%)] border-[hsl(245,79%,55%)] text-white shadow-sm'
                   : 'bg-[hsl(220,12%,18%)] border-[hsl(220,10%,20%)] text-white/70 hover:text-white'

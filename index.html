@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- Primary Meta Tags -->
-    <title>ScreenCraft — Free Online Screenshot Mockup Generator & Editor</title>
-    <meta name="title" content="ScreenCraft — Free Online Screenshot Mockup Generator & Editor" />
-    <meta name="description" content="Turn raw screenshots into stunning, professional visuals. Add macOS browser frames, mobile bezels, beautiful gradients, and export crisp 4K Retina PNGs in seconds. Free, client-side & privacy-first." />
-    <meta name="keywords" content="screenshot mockup generator, beautify screenshots, chrome web store screenshot generator, browser mockup frame, screenshot editor online, macos window mockup, high resolution screenshot export, clean screenshots for portfolio" />
+    <title>ScreenCraft — Free Screenshot & Recording Mockup Editor</title>
+    <meta name="title" content="ScreenCraft — Free Screenshot & Recording Mockup Editor" />
+    <meta name="description" content="Style screenshots and screen recordings with browser or phone frames, custom backgrounds, and high-resolution PNG or browser-supported video exports. Free to use; media files stay in your browser." />
+    <meta name="keywords" content="screenshot mockup generator, screen recording editor, beautify screenshots, chrome web store screenshot generator, browser mockup frame, screenshot editor online, macos window mockup, high resolution screenshot export, clean screenshots for portfolio" />
     <meta name="author" content="ScreenCraft" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://screen-craft.vercel.app/" />
@@ -26,8 +26,8 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://screen-craft.vercel.app/" />
     <meta property="og:site_name" content="ScreenCraft" />
-    <meta property="og:title" content="ScreenCraft — Free Online Screenshot Mockup Generator & Editor" />
-    <meta property="og:description" content="Turn raw screenshots into professional visuals with browser frames, device bezels, and 4K Retina export. 100% free and client-side." />
+    <meta property="og:title" content="ScreenCraft — Free Screenshot & Recording Mockup Editor" />
+    <meta property="og:description" content="Style screenshots and screen recordings with device frames, custom backgrounds, and high-resolution PNG or browser-supported video exports. Media files stay in your browser." />
     <meta property="og:image" content="https://screen-craft.vercel.app/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -37,8 +37,8 @@
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://screen-craft.vercel.app/" />
-    <meta name="twitter:title" content="ScreenCraft — Free Online Screenshot Mockup Generator & Editor" />
-    <meta name="twitter:description" content="Turn raw screenshots into professional visuals with browser frames, device bezels, and 4K Retina export. 100% free." />
+    <meta name="twitter:title" content="ScreenCraft — Free Screenshot & Recording Mockup Editor" />
+    <meta name="twitter:description" content="Style screenshots and screen recordings with device frames, custom backgrounds, and high-resolution PNG or browser-supported video exports. Media files stay in your browser." />
     <meta name="twitter:image" content="https://screen-craft.vercel.app/og-image.png" />
     <meta name="twitter:image:alt" content="ScreenCraft screenshot mockup generator preview" />
 
@@ -50,24 +50,24 @@
         "@type": "WebApplication",
         "name": "ScreenCraft",
         "url": "https://screen-craft.vercel.app/",
-        "description": "Free client-side tool to turn raw screenshots into polished visuals with browser and device frames, gradients, and 4K Retina export.",
+        "description": "Free browser-based tool to style screenshots and screen recordings with browser or device frames, custom backgrounds, high-resolution PNG exports, and video export in browser-supported formats.",
         "applicationCategory": "DesignApplication",
-        "operatingSystem": "All (Web Browser)",
-        "browserRequirements": "Requires HTML5 Canvas and JavaScript support",
+        "operatingSystem": "Web browser on a supported operating system",
+        "browserRequirements": "Requires JavaScript and HTML Canvas; video import and export depend on browser codec and MediaRecorder support",
         "offers": {
           "@type": "Offer",
           "price": "0",
           "priceCurrency": "USD"
         },
         "featureList": [
-          "Automatic native screenshot resolution detection",
+          "Canvas dimensions can be matched to the source media",
           "macOS browser and desktop frames",
           "Smartphone device frame with notch",
           "Solid, gradient, and blurred backgrounds",
           "Customizable padding, shadow, and corner radius",
           "Presets for Chrome Web Store, Twitter/X, Instagram, and LinkedIn",
-          "2x Retina and 3x Ultra HD high-resolution export",
-          "100% client-side privacy-first processing"
+          "PNG export at 1x, 2x, or 3x canvas scale",
+          "Image and video processing in the browser; media files are not uploaded"
         ]
       },
       {
@@ -76,7 +76,7 @@
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "How do I create screenshot mockups for the Chrome Web Store?",
+            "name": "How do I create mockups for the Chrome Web Store?",
             "acceptedAnswer": {
               "@type": "Answer",
               "text": "ScreenCraft includes built-in 1400x560 (Marquee) and 1280x800 (Screenshot) canvas presets conforming to Google Chrome Web Store asset specifications."
@@ -84,10 +84,10 @@
           },
           {
             "@type": "Question",
-            "name": "Does ScreenCraft reduce or compress screenshot quality?",
+            "name": "Does ScreenCraft change my original file?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "No. ScreenCraft preserves 100% of the native screenshot resolution with zero downscaling and supports 2x Retina and 3x Ultra HD high-resolution export."
+              "text": "No. Your original file stays unchanged. The preview may scale it proportionally to fit the canvas; PNG exports use the canvas dimensions and selected 1x, 2x, or 3x export scale."
             }
           },
           {
@@ -95,15 +95,15 @@
             "name": "Are my screenshots private and secure?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. ScreenCraft runs 100% in your browser using client-side HTML5 Canvas. No screenshots or data are ever uploaded to a server."
+              "text": "Images and videos are processed in your browser and are not uploaded. Usage analytics can record app events, but never media or filenames."
             }
           },
           {
             "@type": "Question",
-            "name": "Can I paste screenshots directly from clipboard?",
+            "name": "Can I paste screenshots directly from my clipboard?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes! You can press Ctrl+V or Cmd+V to paste screenshots directly from your system clipboard without needing to save files first."
+              "text": "With ScreenCraft open, press Ctrl+V on Windows/Linux or Cmd+V on Mac to import an image from your clipboard without saving it first."
             }
           }
         ]

@@ -34,7 +34,7 @@ export const ImageUploader = memo(function ImageUploader({
       onDrop={onDrop}
       className={`
         flex-1 flex items-center justify-center p-6 sm:p-8 cursor-pointer
-        border-2 border-dashed rounded-xl transition-all duration-200 min-h-[300px] sm:min-h-0
+        border-2 border-dashed rounded-xl transition-[border-color,background-color] duration-200 min-h-[300px] sm:min-h-0 card-hover
         ${isDragging 
           ? 'border-[hsl(245,79%,55%)] bg-[hsl(245,79%,55%)]/5' 
           : 'border-white/20 hover:border-white/40 bg-white/[0.02]'
@@ -52,7 +52,7 @@ export const ImageUploader = memo(function ImageUploader({
       <div className="text-center">
         <div className={`
           w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center
-          transition-all duration-200
+          transition-[background-color] duration-200
           ${isDragging 
             ? 'bg-[hsl(245,79%,55%)]/20' 
             : 'bg-white/5'
@@ -95,6 +95,9 @@ export const ImageUploader = memo(function ImageUploader({
           </span>
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/10 text-[10px] text-emerald-400/70 border border-emerald-500/10">
             <Film className="w-2.5 h-2.5" /> WebM
+          </span>
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/10 text-[10px] text-emerald-400/70 border border-emerald-500/10">
+            <Film className="w-2.5 h-2.5" /> MOV
           </span>
         </div>
         

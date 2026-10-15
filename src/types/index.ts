@@ -24,7 +24,7 @@ export interface CanvasPreset {
 }
 
 export const CANVAS_PRESETS: CanvasPreset[] = [
-  { name: 'Auto (Match Screenshot)', width: 0, height: 0, category: 'custom' },
+  { name: 'Auto (Match Media)', width: 0, height: 0, category: 'custom' },
   { name: 'Chrome Web Store Marquee', width: 1400, height: 560, category: 'chrome-web-store' },
   { name: 'Chrome Web Store Screenshot', width: 1280, height: 800, category: 'chrome-web-store' },
   { name: 'Twitter/X Post', width: 1200, height: 675, category: 'social' },

@@ -2,7 +2,7 @@
   "id": "/",
   "name": "ScreenCraft — Screenshot & Screen Recording Mockup Generator",
   "short_name": "ScreenCraft",
-  "description": "Turn raw screenshots and screen recordings into professional visuals with device frames, gradients, and 4K Retina export. 100% free, client-side & privacy-first.",
+  "description": "Style screenshots and screen recordings with device frames, custom backgrounds, high-resolution PNGs, and video exports in browser-supported formats. Media files stay in your browser.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

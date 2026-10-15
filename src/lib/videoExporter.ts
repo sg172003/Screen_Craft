@@ -28,7 +28,7 @@ function getMimeType(format: VideoExportFormat): string | null {
     }
   }
 
-  // WebM fallback (universally supported in Chromium)
+  // Try commonly supported WebM codecs in order.
   const webmTypes = [
     'video/webm;codecs=vp9,opus',
     'video/webm;codecs=vp9',
@@ -81,7 +81,7 @@ export function exportVideo(
     // Determine MIME type
     const mimeType = getMimeType(format);
     if (!mimeType) {
-      reject(new Error(`Video format "${format}" is not supported by your browser. Try WebM.`));
+      reject(new Error(`Video format "${format}" is not supported by your browser. Try another available format.`));
       return;
     }
 

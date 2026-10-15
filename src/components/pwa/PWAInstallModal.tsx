@@ -110,33 +110,33 @@ export const PWAInstallModal = memo(function PWAInstallModal({ pwa }: PWAInstall
 
           {/* Benefits */}
           <div className="px-6 pb-4 space-y-3">
-            <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5">
+            <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5 card-hover">
               <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0 mt-0.5">
                 <Zap className="w-4 h-4 text-amber-400" />
               </div>
               <div>
-                <p className="text-sm font-medium text-white/90">Offline & Instant Launch</p>
-                <p className="text-xs text-white/45 mt-0.5">Open directly from your Dock, Taskbar, or Home Screen</p>
+                <p className="text-sm font-medium text-white/90">Offline Access After Caching</p>
+                <p className="text-xs text-white/45 mt-0.5">After its app assets are cached, ScreenCraft can open without a connection.</p>
               </div>
             </div>
 
-            <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5">
+            <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5 card-hover">
               <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5">
                 <Shield className="w-4 h-4 text-emerald-400" />
               </div>
               <div>
-                <p className="text-sm font-medium text-white/90">100% Client-Side Privacy</p>
-                <p className="text-xs text-white/45 mt-0.5">Runs in a distraction-free native window with zero uploads</p>
+                <p className="text-sm font-medium text-white/90">Your Media Stays on This Device</p>
+                <p className="text-xs text-white/45 mt-0.5">Images and videos are processed in your browser and are not uploaded.</p>
               </div>
             </div>
 
-            <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5">
+            <div className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5 card-hover">
               <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0 mt-0.5">
                 <Rocket className="w-4 h-4 text-blue-400" />
               </div>
               <div>
-                <p className="text-sm font-medium text-white/90">Faster Performance</p>
-                <p className="text-xs text-white/45 mt-0.5">Instant asset caching without browser tab overhead</p>
+                <p className="text-sm font-medium text-white/90">Quick Access</p>
+                <p className="text-xs text-white/45 mt-0.5">Launch ScreenCraft from your Dock, taskbar, or home screen.</p>
               </div>
             </div>
           </div>
@@ -146,7 +146,7 @@ export const PWAInstallModal = memo(function PWAInstallModal({ pwa }: PWAInstall
             <div className="px-6 pb-3">
               <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-300 leading-relaxed">
                 <p className="font-medium mb-1">Install on iOS:</p>
-                <p>1. Tap the <strong>Share</strong> button ⎋ in Safari</p>
+                <p>1. Tap the <strong>Share</strong> icon in Safari</p>
                 <p>2. Scroll down and tap <strong>Add to Home Screen</strong> ➕</p>
               </div>
             </div>

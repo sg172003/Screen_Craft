@@ -70,8 +70,7 @@ export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) 
     handleFileSelect,
   } = useMediaUpload();
 
-  // Automatically adjust canvas size to native resolution when media is imported
-  // This guarantees 0% downscaling and preserves 100% native quality
+  // Size the canvas around the source dimensions, padding, and selected frame.
   const lastLoadedMediaRef = useRef<HTMLImageElement | HTMLVideoElement | null>(null);
   useEffect(() => {
     const media = image || video;
@@ -308,7 +307,7 @@ export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) 
               size="sm"
               onClick={handleCopy}
               className="text-white/70 hover:text-white hover:bg-white/10 h-8 px-2 sm:px-3 text-xs"
-              title="Copy High-Res PNG to Clipboard"
+              title="Copy PNG to Clipboard"
             >
               {isCopied ? (
                 <>
@@ -344,9 +343,9 @@ export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) 
             >
               <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
               <span className="hidden sm:inline">
-                {isExporting ? 'Exporting...' : `Download ${exportScale}x PNG`}
+                {isExporting ? 'Exporting…' : `Download ${exportScale}× PNG`}
               </span>
-              <span className="sm:hidden">{isExporting ? '...' : `Export ${exportScale}x`}</span>
+              <span className="sm:hidden">{isExporting ? '…' : `Export ${exportScale}×`}</span>
             </Button>
           )}
         </div>
@@ -374,7 +373,7 @@ export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) 
               </span>
               <span className="text-white/20 hidden sm:inline">•</span>
               <span className="text-white/40 hidden sm:inline">
-                Exporting at <span className="text-white/70 font-mono">{exportWidth} × {exportHeight}px</span> ({exportScale}x Retina HD)
+                Exporting at <span className="text-white/70 font-mono">{exportWidth} × {exportHeight}px</span> ({exportScale}× export scale)
               </span>
             </div>
 
@@ -388,7 +387,7 @@ export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) 
                 ) : (
                   <div className="flex items-center gap-1.5 text-emerald-400 font-medium">
                     <Sparkles className="w-3 h-3" />
-                    <span className="text-[10px] sm:text-xs">100% Native Resolution</span>
+                    <span className="text-[10px] sm:text-xs">Source Aspect Ratio Preserved</span>
                   </div>
                 )}
               </div>
@@ -517,9 +516,9 @@ export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) 
       {hasMedia && !isVideoExportOpen && (
         <div className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 text-[10px] sm:text-xs text-white/40 bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded-md pointer-events-none hidden md:flex items-center gap-2 border border-white/5 z-20">
           {mediaType === 'video' ? (
-            <span>Press <kbd className="px-1 py-0.5 bg-white/10 rounded font-mono text-[9px]">Space</kbd> to play/pause • <kbd className="px-1 py-0.5 bg-white/10 rounded font-mono text-[9px]">Ctrl+S</kbd> to export</span>
+            <span>Press <kbd className="px-1 py-0.5 bg-white/10 rounded font-mono text-[9px]">Space</kbd> to play/pause • <kbd className="px-1 py-0.5 bg-white/10 rounded font-mono text-[9px]">Ctrl/Cmd+S</kbd> to export</span>
           ) : (
-            <span>Press <kbd className="px-1 py-0.5 bg-white/10 rounded font-mono text-[9px]">Ctrl+S</kbd> to export high-res</span>
+            <span>Press <kbd className="px-1 py-0.5 bg-white/10 rounded font-mono text-[9px]">Ctrl/Cmd+S</kbd> to export PNG</span>
           )}
         </div>
       )}

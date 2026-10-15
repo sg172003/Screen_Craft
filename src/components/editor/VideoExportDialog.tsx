@@ -141,7 +141,7 @@ export const VideoExportDialog = memo(function VideoExportDialog({
                 onClick={() => setFormat('mp4')}
                 disabled={isExporting || !supported.mp4}
                 className={`
-                  p-3 rounded-xl border text-sm font-medium transition-all text-left
+                  p-3 rounded-xl border text-sm font-medium transition-[background-color,border-color,color] btn-hover text-left
                   ${format === 'mp4'
                     ? 'bg-[hsl(245,79%,55%)]/15 border-[hsl(245,79%,55%)]/50 text-white'
                     : 'bg-white/[0.03] border-white/10 text-white/60 hover:border-white/20'
@@ -151,7 +151,7 @@ export const VideoExportDialog = memo(function VideoExportDialog({
               >
                 <div className="font-semibold">MP4</div>
                 <div className="text-[10px] text-white/40 mt-0.5">
-                  {supported.mp4 ? 'H.264 • Universal' : 'Not supported'}
+                  {supported.mp4 ? 'Available in this browser' : 'Not supported'}
                 </div>
               </button>
 
@@ -159,7 +159,7 @@ export const VideoExportDialog = memo(function VideoExportDialog({
                 onClick={() => setFormat('webm')}
                 disabled={isExporting || !supported.webm}
                 className={`
-                  p-3 rounded-xl border text-sm font-medium transition-all text-left
+                  p-3 rounded-xl border text-sm font-medium transition-[background-color,border-color,color] btn-hover text-left
                   ${format === 'webm'
                     ? 'bg-[hsl(245,79%,55%)]/15 border-[hsl(245,79%,55%)]/50 text-white'
                     : 'bg-white/[0.03] border-white/10 text-white/60 hover:border-white/20'
@@ -169,7 +169,7 @@ export const VideoExportDialog = memo(function VideoExportDialog({
               >
                 <div className="font-semibold">WebM</div>
                 <div className="text-[10px] text-white/40 mt-0.5">
-                  {supported.webm ? 'VP9 • High Quality' : 'Not supported'}
+                  {supported.webm ? 'Available in this browser' : 'Not supported'}
                 </div>
               </button>
             </div>
@@ -179,7 +179,7 @@ export const VideoExportDialog = memo(function VideoExportDialog({
           {isExporting && (
             <div className="px-6 pb-4">
               <div className="flex items-center justify-between text-xs text-white/60 mb-2">
-                <span>Rendering video...</span>
+                <span>Rendering video…</span>
                 <span className="font-mono">{progress}%</span>
               </div>
               <Progress value={progress} className="h-2" />

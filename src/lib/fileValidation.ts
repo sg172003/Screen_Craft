@@ -186,7 +186,7 @@ export async function validateFile(file: File): Promise<ValidationResult> {
   }
 
   return fail(
-    'Unsupported file format. Please upload a PNG, JPG, WebP image or MP4, WebM screen recording.'
+    'Unsupported file format. Upload a PNG, JPG, or WebP image, or an MP4, WebM, or MOV video.'
   );
 }
 
