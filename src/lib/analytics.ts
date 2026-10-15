@@ -13,27 +13,97 @@ declare global {
 }
 
 const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined;
+const ANALYTICS_CONSENT_KEY = 'screencraft_analytics_consent';
+const ANALYTICS_SETTINGS_EVENT = 'screencraft:analytics-settings';
 
 let initialized = false;
+let analyticsEnabled = false;
+
+export function isAnalyticsConfigured(): boolean {
+  return Boolean(GA_MEASUREMENT_ID);
+}
+
+export function openAnalyticsSettings(): void {
+  window.dispatchEvent(new Event(ANALYTICS_SETTINGS_EVENT));
+}
+
+export function addAnalyticsSettingsListener(listener: () => void): () => void {
+  window.addEventListener(ANALYTICS_SETTINGS_EVENT, listener);
+  return () => window.removeEventListener(ANALYTICS_SETTINGS_EVENT, listener);
+}
+
+export function getAnalyticsConsent(): boolean | null {
+  try {
+    const value = localStorage.getItem(ANALYTICS_CONSENT_KEY);
+    if (value === 'granted') return true;
+    if (value === 'denied') return false;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveAnalyticsConsent(allowed: boolean): void {
+  try {
+    localStorage.setItem(ANALYTICS_CONSENT_KEY, allowed ? 'granted' : 'denied');
+  } catch {
+    // If preferences cannot be stored, do not enable analytics for this session.
+    allowed = false;
+  }
+
+  analyticsEnabled = allowed;
+  if (allowed) {
+    initGA();
+    return;
+  }
+
+  if (initialized && window.gtag) {
+    window.gtag('consent', 'update', {
+      analytics_storage: 'denied',
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+    });
+  }
+}
 
 /**
  * Initialize Google Analytics by injecting the gtag.js script.
  * Call once at app startup (e.g. in main.tsx or App.tsx).
  */
 export function initGA(): void {
-  if (initialized) return;
-  if (!GA_MEASUREMENT_ID) {
-    console.warn('[Analytics] VITE_GA_MEASUREMENT_ID not set. Analytics disabled.');
-    return;
-  }
+  if (getAnalyticsConsent() !== true || !GA_MEASUREMENT_ID) return;
 
   try {
+    if (initialized) {
+      window.gtag('consent', 'update', {
+        analytics_storage: 'granted',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+      });
+      analyticsEnabled = true;
+      return;
+    }
+
     // Initialize dataLayer
     window.dataLayer = window.dataLayer || [];
     window.gtag = function gtag(...args: unknown[]) {
       window.dataLayer.push(args);
     };
     window.gtag('js', new Date());
+    window.gtag('consent', 'default', {
+      analytics_storage: 'denied',
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+    });
+    window.gtag('consent', 'update', {
+      analytics_storage: 'granted',
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+    });
     window.gtag('config', GA_MEASUREMENT_ID, {
       send_page_view: false, // We'll send page views manually for SPA
     });
@@ -48,6 +118,7 @@ export function initGA(): void {
     document.head.appendChild(script);
 
     initialized = true;
+    analyticsEnabled = true;
   } catch {
     console.warn('[Analytics] Failed to initialize Google Analytics.');
   }
@@ -57,7 +128,7 @@ export function initGA(): void {
  * Track a virtual page view (for SPA navigation).
  */
 export function trackPageView(path: string, title?: string): void {
-  if (!initialized || !window.gtag) return;
+  if (!analyticsEnabled || !initialized || !window.gtag) return;
   try {
     window.gtag('event', 'page_view', {
       page_path: path,
@@ -75,7 +146,7 @@ export function trackEvent(
   eventName: string,
   params?: Record<string, string | number | boolean>
 ): void {
-  if (!initialized || !window.gtag) return;
+  if (!analyticsEnabled || !initialized || !window.gtag) return;
   try {
     window.gtag('event', eventName, params);
   } catch {

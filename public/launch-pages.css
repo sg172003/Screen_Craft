@@ -1,0 +1,82 @@
+:root {
+  color-scheme: light dark;
+  font-family: "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  color: #1f2937;
+  background: #f9fafb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-width: 320px;
+  line-height: 1.65;
+  background: #f9fafb;
+  color: #1f2937;
+}
+
+a { color: #4f46e5; text-underline-offset: 3px; }
+a:hover { color: #4338ca; }
+a:focus-visible, button:focus-visible { outline: 3px solid #818cf8; outline-offset: 3px; }
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 1rem;
+  z-index: 2;
+  border-radius: .5rem;
+  padding: .5rem .75rem;
+  background: #fff;
+}
+.skip-link:focus { left: 1rem; }
+
+.site-header, .site-footer {
+  border-color: #e5e7eb;
+  border-style: solid;
+  padding: 1rem max(1.25rem, calc((100vw - 900px) / 2));
+}
+.site-header { border-width: 0 0 1px; }
+.site-footer { border-width: 1px 0 0; color: #6b7280; font-size: .875rem; }
+.header-inner, .footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.brand { color: inherit; font-weight: 700; text-decoration: none; }
+.header-link { white-space: nowrap; font-size: .9rem; font-weight: 600; }
+
+main {
+  max-width: 760px;
+  min-height: calc(100vh - 150px);
+  margin: 0 auto;
+  padding: clamp(2.5rem, 8vw, 5rem) 1.25rem;
+}
+h1, h2 { line-height: 1.2; color: #111827; }
+h1 { margin: 0 0 .75rem; font-size: clamp(2rem, 5vw, 2.7rem); letter-spacing: -.035em; }
+h2 { margin: 2.25rem 0 .65rem; font-size: 1.25rem; letter-spacing: -.015em; }
+p { margin: .65rem 0; }
+li { padding-left: .25rem; }
+ul, ol { padding-left: 1.35rem; }
+.updated { color: #6b7280; font-size: .9rem; }
+.notice { margin: 1.5rem 0; border-left: 3px solid #6366f1; padding: .75rem 1rem; background: #eef2ff; }
+.back-link { display: inline-flex; margin-top: 2rem; font-weight: 600; }
+
+@media (prefers-color-scheme: dark) {
+  :root { color: #e5e7eb; background: #111827; }
+  body { color: #e5e7eb; background: #111827; }
+  .site-header, .site-footer { border-color: #374151; }
+  .site-footer, .updated { color: #9ca3af; }
+  h1, h2 { color: #f9fafb; }
+  a { color: #a5b4fc; }
+  a:hover { color: #c7d2fe; }
+  .notice { background: #1f2937; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a { transition: color 140ms ease; }
+}

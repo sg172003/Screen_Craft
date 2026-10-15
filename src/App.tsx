@@ -2,6 +2,7 @@ import { useState, useCallback, lazy, Suspense, useEffect } from 'react';
 import { Spinner } from '@/components/ui/spinner';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { PWAInstallModal } from '@/components/pwa/PWAInstallModal';
+import { AnalyticsConsent } from '@/components/AnalyticsConsent';
 import { usePWAInstall } from '@/hooks/usePWAInstall';
 import { initGA, trackPageView } from '@/lib/analytics';
 import './App.css';
@@ -59,6 +60,7 @@ function AppContent() {
 
       {/* PWA Install Modal (Downloadable popup, cancelable with snooze support) */}
       {!showEditor && <PWAInstallModal pwa={pwa} />}
+      <AnalyticsConsent />
     </>
   );
 }

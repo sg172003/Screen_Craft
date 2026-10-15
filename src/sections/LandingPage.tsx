@@ -3,6 +3,7 @@ import { ArrowRight, Upload, Sliders, Image as ImageIcon, Check } from 'lucide-r
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { renderToCanvas } from '@/lib/canvasRenderer';
+import { isAnalyticsConfigured, openAnalyticsSettings } from '@/lib/analytics';
 import {
   Accordion,
   AccordionItem,
@@ -325,7 +326,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
                 Are my screenshots private and secure?
               </AccordionTrigger>
               <AccordionContent className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                Images and videos are processed in your browser and are not uploaded. Usage analytics can record app events, but never media or filenames.
+                Images and videos are processed in your browser and are not uploaded. If you allow analytics, it records app events and media details such as type, size, and dimensions, but never the files or filenames.
               </AccordionContent>
             </AccordionItem>
 
@@ -370,10 +371,17 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
             <img src="/logo.png" alt="" width="24" height="24" className="w-5 h-5 sm:w-6 sm:h-6" />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">ScreenCraft</span>
           </div>
-          <div className="flex items-center gap-4 text-xs text-gray-500">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-gray-500">
             <a href="#how-it-works" className="hover:text-gray-900 dark:hover:text-white transition-colors">How it works</a>
             <a href="#features" className="hover:text-gray-900 dark:hover:text-white transition-colors">Features</a>
             <a href="#faq" className="hover:text-gray-900 dark:hover:text-white transition-colors">FAQ</a>
+            <a href="/help" className="hover:text-gray-900 dark:hover:text-white transition-colors">Help</a>
+            <a href="/privacy" className="hover:text-gray-900 dark:hover:text-white transition-colors">Privacy</a>
+            {isAnalyticsConfigured() && (
+              <button type="button" onClick={openAnalyticsSettings} className="hover:text-gray-900 dark:hover:text-white transition-colors">
+                Analytics settings
+              </button>
+            )}
             <a href="https://github.com/sg172003/Screen_Craft" target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition-colors">GitHub</a>
           </div>
           <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 text-center sm:text-right">
