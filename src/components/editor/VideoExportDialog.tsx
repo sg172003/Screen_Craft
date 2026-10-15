@@ -19,7 +19,9 @@ export const VideoExportDialog = memo(function VideoExportDialog({
   fileName,
   onClose,
 }: VideoExportDialogProps) {
-  const [format, setFormat] = useState<VideoExportFormat>('mp4');
+  const [format, setFormat] = useState<VideoExportFormat>(() => (
+    getSupportedFormats().mp4 ? 'mp4' : 'webm'
+  ));
   const [isExporting, setIsExporting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -55,8 +57,10 @@ export const VideoExportDialog = memo(function VideoExportDialog({
       const link = document.createElement('a');
       link.href = url;
       link.download = `${baseName}-beautified.${extension}`;
+      document.body.appendChild(link);
       link.click();
-      URL.revokeObjectURL(url);
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
 
       trackVideoExport(extension, video.duration);
       onClose();

@@ -50,7 +50,7 @@ export function useMediaUpload(): UseMediaUploadReturn {
   const [isLooping, setIsLooping] = useState(true);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const timeUpdateRef = useRef<number>(0);
+  const videoObjectUrlRef = useRef<string | null>(null);
 
   // Clean up video element on unmount or media change
   const cleanupVideo = useCallback(() => {
@@ -59,8 +59,11 @@ export function useMediaUpload(): UseMediaUploadReturn {
       vid.pause();
       vid.removeAttribute('src');
       vid.load();
-      URL.revokeObjectURL(vid.src);
       videoRef.current = null;
+    }
+    if (videoObjectUrlRef.current) {
+      URL.revokeObjectURL(videoObjectUrlRef.current);
+      videoObjectUrlRef.current = null;
     }
     setIsPlaying(false);
     setCurrentTime(0);
@@ -106,11 +109,15 @@ export function useMediaUpload(): UseMediaUploadReturn {
       vid.crossOrigin = 'anonymous';
 
       const objectUrl = URL.createObjectURL(file);
+      videoRef.current = vid;
+      videoObjectUrlRef.current = objectUrl;
 
       vid.onloadedmetadata = () => {
         const durError = validateVideoDuration(vid.duration);
         if (durError) {
           URL.revokeObjectURL(objectUrl);
+          if (videoObjectUrlRef.current === objectUrl) videoObjectUrlRef.current = null;
+          videoRef.current = null;
           reject(new Error(durError));
           return;
         }
@@ -126,11 +133,17 @@ export function useMediaUpload(): UseMediaUploadReturn {
         setIsMuted(true);
         setIsLooping(true);
         setError(null);
+        vid.onerror = () => {
+          setIsPlaying(false);
+          setError('The video could not be decoded further. Try a browser-supported MP4 or WebM file.');
+        };
         resolve();
       };
 
       vid.onerror = () => {
         URL.revokeObjectURL(objectUrl);
+        if (videoObjectUrlRef.current === objectUrl) videoObjectUrlRef.current = null;
+        videoRef.current = null;
         reject(new Error('Failed to load video. The format may not be supported by your browser.'));
       };
 
@@ -211,12 +224,10 @@ export function useMediaUpload(): UseMediaUploadReturn {
 
     if (vid.paused) {
       vid.play().catch(() => {
-        // Autoplay may be blocked
+        setIsPlaying(false);
       });
-      setIsPlaying(true);
     } else {
       vid.pause();
-      setIsPlaying(false);
     }
   }, []);
 
@@ -241,36 +252,43 @@ export function useMediaUpload(): UseMediaUploadReturn {
     setIsLooping(vid.loop);
   }, []);
 
-  // Track video time updates via RAF for smooth scrubber
+  // Follow native media events instead of forcing React renders on every display frame.
   useEffect(() => {
-    const vid = videoRef.current;
-    if (!vid || !isPlaying) return;
+    if (!video) return;
 
-    const update = () => {
-      setCurrentTime(vid.currentTime);
-      timeUpdateRef.current = requestAnimationFrame(update);
+    const updateTime = () => setCurrentTime(video.currentTime);
+    const handlePlaying = () => setIsPlaying(true);
+    const handlePaused = () => setIsPlaying(false);
+    const handleEnded = () => {
+      setIsPlaying(false);
+      updateTime();
     };
-    timeUpdateRef.current = requestAnimationFrame(update);
+
+    video.addEventListener('timeupdate', updateTime);
+    video.addEventListener('seeking', updateTime);
+    video.addEventListener('seeked', updateTime);
+    video.addEventListener('playing', handlePlaying);
+    video.addEventListener('pause', handlePaused);
+    video.addEventListener('ended', handleEnded);
 
     return () => {
-      cancelAnimationFrame(timeUpdateRef.current);
+      video.removeEventListener('timeupdate', updateTime);
+      video.removeEventListener('seeking', updateTime);
+      video.removeEventListener('seeked', updateTime);
+      video.removeEventListener('playing', handlePlaying);
+      video.removeEventListener('pause', handlePaused);
+      video.removeEventListener('ended', handleEnded);
     };
-  }, [isPlaying]);
-
-  // Listen for video ended event
-  useEffect(() => {
-    const vid = videoRef.current;
-    if (!vid) return;
-
-    const handleEnded = () => {
-      if (!vid.loop) {
-        setIsPlaying(false);
-      }
-    };
-
-    vid.addEventListener('ended', handleEnded);
-    return () => vid.removeEventListener('ended', handleEnded);
   }, [video]);
+
+  useEffect(() => () => {
+    videoRef.current?.pause();
+    videoRef.current?.removeAttribute('src');
+    videoRef.current?.load();
+    if (videoObjectUrlRef.current) URL.revokeObjectURL(videoObjectUrlRef.current);
+    videoObjectUrlRef.current = null;
+    videoRef.current = null;
+  }, []);
 
   // Clipboard paste support (Ctrl+V / Cmd+V) — images only via clipboard
   useEffect(() => {

@@ -10,6 +10,11 @@ interface CanvasPreviewProps {
   onCanvasRef: (canvas: HTMLCanvasElement | null) => void;
 }
 
+type VideoFrameCallbackElement = HTMLVideoElement & {
+  requestVideoFrameCallback?: (callback: () => void) => number;
+  cancelVideoFrameCallback?: (handle: number) => void;
+};
+
 export const CanvasPreview = memo(function CanvasPreview({
   settings,
   image = null,
@@ -66,11 +71,10 @@ export const CanvasPreview = memo(function CanvasPreview({
   const renderCurrent = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    if (canvas.width !== settings.width) canvas.width = settings.width;
+    if (canvas.height !== settings.height) canvas.height = settings.height;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-
-    canvas.width = settings.width;
-    canvas.height = settings.height;
 
     renderToCanvas(ctx, settings.width, settings.height, settings, image, video);
   }, [settings, image, video]);
@@ -84,15 +88,41 @@ export const CanvasPreview = memo(function CanvasPreview({
   useEffect(() => {
     if (!video || !isPlaying) return;
 
-    let animId: number;
+    const videoWithFrameCallback = video as VideoFrameCallbackElement;
+    let active = true;
+    let callbackId: number | undefined;
+    let animId: number | undefined;
+
+    if (videoWithFrameCallback.requestVideoFrameCallback) {
+      const renderVideoFrame = () => {
+        if (!active) return;
+        renderCurrent();
+        callbackId = videoWithFrameCallback.requestVideoFrameCallback!(renderVideoFrame);
+      };
+
+      callbackId = videoWithFrameCallback.requestVideoFrameCallback(renderVideoFrame);
+      return () => {
+        active = false;
+        if (callbackId !== undefined) {
+          videoWithFrameCallback.cancelVideoFrameCallback?.(callbackId);
+        }
+      };
+    }
+
+    let lastFrameAt = 0;
     const loop = () => {
-      renderCurrent();
+      const now = performance.now();
+      if (now - lastFrameAt >= 1000 / 30) {
+        renderCurrent();
+        lastFrameAt = now;
+      }
       animId = requestAnimationFrame(loop);
     };
     animId = requestAnimationFrame(loop);
 
     return () => {
-      cancelAnimationFrame(animId);
+      active = false;
+      if (animId !== undefined) cancelAnimationFrame(animId);
     };
   }, [video, isPlaying, renderCurrent]);
 
