@@ -112,7 +112,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="logo-wrap" tabIndex={-1}>
-              <img src="/logo.png" alt="" width="32" height="32" className="logo-glow w-7 h-7 sm:w-8 sm:h-8" />
+              <img src="/logo.png" alt="ScreenCraft logo" width="32" height="32" className="logo-glow w-7 h-7 sm:w-8 sm:h-8" />
             </span>
             <span className="font-semibold text-gray-900 dark:text-white text-base sm:text-lg">ScreenCraft</span>
           </div>
@@ -368,7 +368,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
       <footer className="py-6 sm:py-8 px-4 sm:px-6 border-t border-gray-100 dark:border-gray-800 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="" width="24" height="24" className="w-5 h-5 sm:w-6 sm:h-6" />
+            <img src="/logo.png" alt="ScreenCraft" width="24" height="24" className="w-5 h-5 sm:w-6 sm:h-6" />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">ScreenCraft</span>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-gray-500">

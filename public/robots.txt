@@ -1,4 +1,39 @@
+# ScreenCraft — robots.txt
+# https://screen-craft.vercel.app/
+
 User-agent: *
 Allow: /
+
+# AI Search Crawlers — ALLOW for citability in AI search results
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# AI Training Crawlers — BLOCK (opt out of model training)
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
 
 Sitemap: https://screen-craft.vercel.app/sitemap.xml

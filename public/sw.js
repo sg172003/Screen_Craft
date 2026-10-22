@@ -12,6 +12,7 @@ const APP_SHELL = [
   '/favicon.svg',
   '/favicon.png',
   '/logo.png',
+  '/logo-192.png',
   '/site.webmanifest',
 ];
 

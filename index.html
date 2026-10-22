@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- Primary Meta Tags -->
-    <title>ScreenCraft — Free Screenshot & Recording Mockup Editor</title>
-    <meta name="title" content="ScreenCraft — Free Screenshot & Recording Mockup Editor" />
-    <meta name="description" content="Style screenshots and screen recordings with browser or phone frames, custom backgrounds, and high-resolution PNG or browser-supported video exports. Free to use; media files stay in your browser." />
+    <title>Free Screenshot Mockup Generator — ScreenCraft</title>
+    <meta name="title" content="Free Screenshot Mockup Generator — ScreenCraft" />
+    <meta name="description" content="Turn screenshots and screen recordings into clean mockups with macOS browser or mobile frames, gradient backgrounds, and Retina PNGs. Free, 100% private, no signup." />
+    <meta name="keywords" content="screenshot mockup generator, screenshot editor online free, browser frame screenshot tool, screenshot beautifier, screen recording mockup, device frame generator, free mockup tool, screenshot to mockup, product screenshot maker, Chrome Web Store screenshot, social media mockup" />
     <meta name="author" content="ScreenCraft" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://screen-craft.vercel.app/" />
@@ -16,7 +17,7 @@
     <!-- Favicons & App Icons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
-    <link rel="apple-touch-icon" href="/logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#4f46e5" />
     <meta name="application-name" content="ScreenCraft" />
@@ -25,8 +26,8 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://screen-craft.vercel.app/" />
     <meta property="og:site_name" content="ScreenCraft" />
-    <meta property="og:title" content="ScreenCraft — Free Screenshot & Recording Mockup Editor" />
-    <meta property="og:description" content="Style screenshots and screen recordings with device frames, custom backgrounds, and high-resolution PNG or browser-supported video exports. Media files stay in your browser." />
+    <meta property="og:title" content="Free Screenshot Mockup Generator — ScreenCraft" />
+    <meta property="og:description" content="Turn screenshots and screen recordings into clean mockups with macOS browser or mobile frames, gradient backgrounds, and Retina PNGs. Free, 100% private, no signup." />
     <meta property="og:image" content="https://screen-craft.vercel.app/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -36,88 +37,111 @@
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://screen-craft.vercel.app/" />
-    <meta name="twitter:title" content="ScreenCraft — Free Screenshot & Recording Mockup Editor" />
-    <meta name="twitter:description" content="Style screenshots and screen recordings with device frames, custom backgrounds, and high-resolution PNG or browser-supported video exports. Media files stay in your browser." />
+    <meta name="twitter:title" content="Free Screenshot Mockup Generator — ScreenCraft" />
+    <meta name="twitter:description" content="Turn screenshots and screen recordings into clean mockups with macOS browser or mobile frames, gradient backgrounds, and Retina PNGs. Free, 100% private, no signup." />
     <meta name="twitter:image" content="https://screen-craft.vercel.app/og-image.png" />
     <meta name="twitter:image:alt" content="ScreenCraft screenshot mockup generator preview" />
 
-    <!-- JSON-LD Structured Data (Schema.org WebApplication) -->
+    <!-- JSON-LD Structured Data (Schema.org Graph: Organization, WebSite, WebApplication) -->
     <script type="application/ld+json">
-    [
-      {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "ScreenCraft",
-        "alternateName": "Screen Craft",
-        "url": "https://screen-craft.vercel.app/"
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "ScreenCraft",
-        "url": "https://screen-craft.vercel.app/",
-        "description": "Free browser-based tool to style screenshots and screen recordings with browser or device frames, custom backgrounds, high-resolution PNG exports, and video export in browser-supported formats.",
-        "applicationCategory": "DesignApplication",
-        "operatingSystem": "Web browser on a supported operating system",
-        "browserRequirements": "Requires JavaScript and HTML Canvas; video import and export depend on browser codec and MediaRecorder support",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://screen-craft.vercel.app/#organization",
+          "name": "ScreenCraft",
+          "url": "https://screen-craft.vercel.app/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://screen-craft.vercel.app/logo.png"
+          },
+          "sameAs": [
+            "https://github.com/sg172003/Screen_Craft"
+          ]
         },
-        "featureList": [
-          "Canvas dimensions can be matched to the source media",
-          "macOS browser and desktop frames",
-          "Smartphone device frame with notch",
-          "Solid, gradient, and blurred backgrounds",
-          "Customizable padding, shadow, and corner radius",
-          "Presets for Chrome Web Store, Twitter/X, Instagram, and LinkedIn",
-          "PNG export at 1x, 2x, or 3x canvas scale",
-          "Image and video processing in the browser; media files are not uploaded"
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "How do I create mockups for the Chrome Web Store?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Choose a Chrome Web Store preset in the editor to size your canvas for a marquee or store screenshot."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Does ScreenCraft change my original file?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. Your original file stays unchanged. The preview may scale it proportionally to fit the canvas; PNG exports use the canvas dimensions and selected 1x, 2x, or 3x export scale."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Are my screenshots private and secure?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Images and videos are processed in your browser and are not uploaded. If you allow analytics, it records app events and media details such as type, size, and dimensions, but never the files or filenames."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Can I paste screenshots directly from my clipboard?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "With ScreenCraft open, press Ctrl+V on Windows/Linux or Cmd+V on Mac to import an image from your clipboard without saving it first."
-            }
+        {
+          "@type": "WebSite",
+          "@id": "https://screen-craft.vercel.app/#website",
+          "name": "ScreenCraft",
+          "alternateName": "Screen Craft",
+          "url": "https://screen-craft.vercel.app/",
+          "publisher": {
+            "@id": "https://screen-craft.vercel.app/#organization"
           }
-        ]
-      }
-    ]
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://screen-craft.vercel.app/#app",
+          "name": "ScreenCraft",
+          "url": "https://screen-craft.vercel.app/",
+          "description": "Free browser-based mockup generator to style screenshots and screen recordings with macOS browser frames, mobile frames, custom backgrounds, high-resolution PNG exports, and video exports. All processing is 100% client-side.",
+          "applicationCategory": "DesignApplication",
+          "operatingSystem": "Web browser on any supported operating system",
+          "browserRequirements": "Requires JavaScript and HTML Canvas; video import and export depend on browser codec and MediaRecorder support",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "author": {
+            "@id": "https://screen-craft.vercel.app/#organization"
+          },
+          "screenshot": {
+            "@type": "ImageObject",
+            "url": "https://screen-craft.vercel.app/og-image.png"
+          },
+          "featureList": [
+            "macOS browser, desktop, and smartphone device frames",
+            "Solid color, gradient, and subtle blurred backgrounds",
+            "Automatic canvas sizing preserving 100% native resolution",
+            "Presets for Chrome Web Store, Twitter/X, Instagram, LinkedIn, Dribbble, Product Hunt",
+            "High-DPI PNG export at 1x, 2x, or 3x scale",
+            "Direct clipboard copy and Ctrl+V / Cmd+V paste support",
+            "Screen recording beautification with MP4 and WebM video export",
+            "100% client-side privacy — media files never leave your browser",
+            "Installable Progressive Web App (PWA) with offline support"
+          ]
+        }
+      ]
+    }
     </script>
   </head>
   <body>
+    <noscript>
+      <div style="max-width:800px;margin:3rem auto;padding:1.5rem;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6;color:#1f2937">
+        <h1 style="font-size:2rem;margin-bottom:1rem;color:#111827">ScreenCraft — Free Screenshot & Recording Mockup Editor</h1>
+        <p style="font-size:1.1rem;margin-bottom:1.5rem;color:#4b5563">
+          Turn raw screenshots and screen recordings into clean, professional visuals. Style screenshots with macOS browser frames, mobile device frames, vibrant gradients, shadows, and export crisp 1x/2x/3x Retina PNGs or MP4/WebM videos.
+        </p>
+        <p style="font-weight:600;color:#4f46e5;margin-bottom:2rem">
+          100% Free &bull; Privacy First &bull; Zero Server Uploads &bull; Works Offline
+        </p>
+        
+        <h2 style="font-size:1.4rem;margin-top:2rem;margin-bottom:0.75rem;color:#111827">Key Features</h2>
+        <ul style="padding-left:1.5rem;margin-bottom:2rem">
+          <li><strong>Device Frames:</strong> Realistic macOS browser with traffic light controls, desktop window, and mobile phone frames.</li>
+          <li><strong>Backgrounds & Styling:</strong> Solid colors, customizable gradients, blur effects, padding, and soft drop shadows.</li>
+          <li><strong>Native Resolution Preservation:</strong> Automatically fits your screenshot dimensions with 0% downscaling blurriness.</li>
+          <li><strong>Social & Store Presets:</strong> Chrome Web Store marquee, Twitter/X, Instagram, LinkedIn, Product Hunt, and Dribbble.</li>
+          <li><strong>Retina Exports & Clipboard:</strong> 1x, 2x, and 3x PNG download, or direct copy to clipboard for instant pasting into Slack, Notion, or Figma.</li>
+          <li><strong>Video Beautification:</strong> Beautify MP4/WebM screen recordings with frames and backgrounds.</li>
+          <li><strong>Privacy First:</strong> Everything runs locally in your web browser. No accounts, no servers, no tracking of media.</li>
+        </ul>
+
+        <h2 style="font-size:1.4rem;margin-top:2rem;margin-bottom:0.75rem;color:#111827">How It Works</h2>
+        <ol style="padding-left:1.5rem;margin-bottom:2rem">
+          <li><strong>Upload or Paste:</strong> Drag and drop your image/video or press Ctrl+V / Cmd+V to paste from your clipboard.</li>
+          <li><strong>Customize:</strong> Select a frame, customize the gradient background, padding, and shadow.</li>
+          <li><strong>Export:</strong> Download a high-res PNG (up to 3x) or copy straight to clipboard.</li>
+        </ol>
+
+        <p style="margin-top:2rem;padding:1rem;background:#f3f4f6;border-radius:8px;font-size:0.95rem;color:#374151">
+          <em>Note: JavaScript is required to run the interactive ScreenCraft editor in your browser. Please enable JavaScript to start crafting.</em>
+        </p>
+      </div>
+    </noscript>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

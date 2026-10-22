@@ -1,0 +1,30 @@
+# ScreenCraft
+> Free, privacy-first screenshot and screen recording mockup editor. Runs 100% in the browser.
+
+## What it does
+ScreenCraft turns raw screenshots and screen recordings into polished, professional visuals. Upload or paste a screenshot, add a browser or device frame, pick a background, and download a high-resolution PNG or export a beautified video — all without uploading anything to a server.
+
+## Features
+- macOS-style browser frame, desktop frame, and smartphone device frame
+- Solid color, gradient, and blurred backgrounds
+- Customizable padding, corner radius, and shadow
+- Canvas presets for Chrome Web Store, Twitter/X, Instagram, LinkedIn, Dribbble, Product Hunt
+- High-DPI PNG export at 1x, 2x, or 3x scale
+- Clipboard copy (one click to paste into Slack, Notion, Figma, or social media)
+- Clipboard paste import (Ctrl+V / Cmd+V from system screenshot tools)
+- MP4 and WebM video beautification and export
+- Video playback controls (play, pause, scrub, mute, loop)
+- Single-frame capture from video recordings
+- Progressive Web App with offline support
+
+## URL
+https://screen-craft.vercel.app/
+
+## Privacy
+All image and video processing happens client-side in the browser. No files are uploaded to any server. No account or signup required. Optional analytics records app events only, never files or filenames.
+
+## Tech Stack
+React, TypeScript, Vite, Tailwind CSS, HTML Canvas API, MediaRecorder API
+
+## Author
+Sarthak — https://github.com/sg172003/Screen_Craft
