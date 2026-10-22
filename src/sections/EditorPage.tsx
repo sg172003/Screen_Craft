@@ -321,12 +321,12 @@ export const EditorPage = memo(function EditorPage({ onBack, onInstallClick }: E
               variant="ghost"
               size="sm"
               onClick={handleCopy}
-              className="text-white/70 hover:text-white hover:bg-white/10 h-8 px-2 sm:px-3 text-xs"
+              className="text-white/70 hover:text-white hover:bg-white/10 h-8 px-2 sm:px-3 text-xs transition-all active:scale-95"
               title="Copy PNG to Clipboard"
             >
               {isCopied ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-emerald-400 mr-1" />
+                  <Check className="w-3.5 h-3.5 text-emerald-400 mr-1 animate-check-pop" />
                   <span className="hidden sm:inline text-emerald-400 font-medium">Copied!</span>
                 </>
               ) : (

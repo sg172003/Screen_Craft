@@ -88,7 +88,7 @@ export const PWAInstallModal = memo(function PWAInstallModal({ pwa }: PWAInstall
             pointer-events-auto w-full max-w-md
             bg-white dark:bg-[#131620] border border-slate-200 dark:border-slate-800
             rounded-2xl shadow-2xl shadow-black/30
-            animate-fade-in overflow-hidden transition-colors
+            animate-modal-scale-in overflow-hidden transition-colors
           "
           onClick={(e) => e.stopPropagation()}
         >

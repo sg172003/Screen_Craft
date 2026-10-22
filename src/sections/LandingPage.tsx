@@ -255,7 +255,13 @@ export const LandingPage = memo(function LandingPage({
 
       <main id="main-content" tabIndex={-1} className="outline-none">
         {/* Hero Section */}
-        <section className="pt-12 sm:pt-20 pb-8 sm:pb-12 px-4 sm:px-6">
+        <section className="relative pt-12 sm:pt-20 pb-8 sm:pb-12 px-4 sm:px-6 overflow-hidden">
+          {/* Subtle Ambient Studio Glow */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] sm:w-[680px] h-[300px] bg-gradient-to-tr from-indigo-500/10 via-purple-500/10 to-blue-500/5 blur-3xl rounded-full animate-ambient-drift -z-10"
+          />
+
           <div className="max-w-4xl mx-auto text-center space-y-4 sm:space-y-6">
             {/* Main Headline */}
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
@@ -279,10 +285,10 @@ export const LandingPage = memo(function LandingPage({
               <Button
                 onClick={onStartCrafting}
                 size="lg"
-                className="w-full sm:w-auto h-12 px-7 bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,47%)] text-white text-base font-medium rounded-xl shadow-lg shadow-[hsl(245,79%,55%)]/20 transition-all hover:scale-[1.01]"
+                className="group w-full sm:w-auto h-12 px-7 bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,47%)] text-white text-base font-medium rounded-xl shadow-lg shadow-[hsl(245,79%,55%)]/20 transition-all duration-200 hover:scale-[1.01] active:scale-[0.98]"
               >
                 <span>Start Crafting — Free</span>
-                <ArrowRight className="w-4 h-4 ml-2" />
+                <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-200 group-hover:translate-x-1" />
               </Button>
 
               {!isInstalled && onInstallClick && (
@@ -290,9 +296,9 @@ export const LandingPage = memo(function LandingPage({
                   onClick={onInstallClick}
                   variant="outline"
                   size="lg"
-                  className="w-full sm:w-auto h-12 px-6 rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131620] hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-sm font-medium transition-all shadow-xs"
+                  className="w-full sm:w-auto h-12 px-6 rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131620] hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-sm font-medium transition-all duration-200 hover:scale-[1.01] active:scale-[0.98] shadow-xs"
                 >
-                  <Download className="w-4 h-4 mr-2 text-[hsl(245,79%,55%)]" />
+                  <Download className="w-4 h-4 mr-2 text-[hsl(245,79%,55%)] transition-transform duration-200 group-hover:-translate-y-0.5" />
                   <span>Download App (PWA)</span>
                 </Button>
               )}
@@ -318,7 +324,7 @@ export const LandingPage = memo(function LandingPage({
                   <button
                     type="button"
                     onClick={() => setFrameType('browser')}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150 active:scale-95 ${
                       frameType === 'browser'
                         ? 'bg-[hsl(245,79%,55%)] text-white shadow-xs'
                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -331,7 +337,7 @@ export const LandingPage = memo(function LandingPage({
                   <button
                     type="button"
                     onClick={() => setFrameType('desktop')}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150 active:scale-95 ${
                       frameType === 'desktop'
                         ? 'bg-[hsl(245,79%,55%)] text-white shadow-xs'
                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -344,7 +350,7 @@ export const LandingPage = memo(function LandingPage({
                   <button
                     type="button"
                     onClick={() => setFrameType('mobile')}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150 active:scale-95 ${
                       frameType === 'mobile'
                         ? 'bg-[hsl(245,79%,55%)] text-white shadow-xs'
                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -365,10 +371,10 @@ export const LandingPage = memo(function LandingPage({
                         type="button"
                         title={preset.name}
                         onClick={() => setActiveColorIdx(idx)}
-                        className={`w-6 h-6 rounded-md transition-all relative ${
+                        className={`w-6 h-6 rounded-md transition-all duration-150 relative active:scale-90 ${
                           activeColorIdx === idx
-                            ? 'ring-2 ring-[hsl(245,79%,55%)] scale-110'
-                            : 'opacity-85 hover:opacity-100'
+                            ? 'ring-2 ring-[hsl(245,79%,55%)] scale-110 shadow-sm'
+                            : 'opacity-85 hover:opacity-100 hover:scale-105'
                         }`}
                         style={{
                           background: `linear-gradient(135deg, ${preset.start}, ${preset.end})`,
@@ -403,7 +409,7 @@ export const LandingPage = memo(function LandingPage({
                   <button
                     type="button"
                     onClick={() => setFrameDarkMode(!frameDarkMode)}
-                    className="text-xs px-2.5 py-1.5 rounded-md bg-white dark:bg-[#0c0e14] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
+                    className="text-xs px-2.5 py-1.5 rounded-md bg-white dark:bg-[#0c0e14] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium transition-all duration-150 active:scale-95"
                   >
                     {frameDarkMode ? 'Dark Frame' : 'Light Frame'}
                   </button>
@@ -411,7 +417,7 @@ export const LandingPage = memo(function LandingPage({
                   <Button
                     onClick={onStartCrafting}
                     size="sm"
-                    className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 text-xs h-8 px-3 rounded-md shadow-xs"
+                    className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 text-xs h-8 px-3 rounded-md shadow-xs transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]"
                   >
                     <span>Open Editor</span>
                     <Maximize2 className="w-3 h-3 ml-1.5" />
@@ -421,10 +427,15 @@ export const LandingPage = memo(function LandingPage({
 
               {/* Responsive Live Canvas Area */}
               <div className="p-4 sm:p-8 bg-slate-100/70 dark:bg-[#08090d] flex items-center justify-center overflow-x-hidden min-h-[360px] sm:min-h-[500px]">
-                <div className="max-w-full flex items-center justify-center">
+                <div
+                  className="max-w-full flex items-center justify-center transition-all duration-500 ease-out"
+                  style={{
+                    filter: `drop-shadow(0 20px 45px ${LIVE_PRESET_COLORS[activeColorIdx].start}24)`,
+                  }}
+                >
                   <canvas
                     ref={canvasRef}
-                    className="max-h-[460px] w-auto max-w-full h-auto object-contain rounded-xl preview-rig-shadow transition-all"
+                    className="max-h-[460px] w-auto max-w-full h-auto object-contain rounded-xl preview-rig-shadow transition-all duration-300 ease-out hover:scale-[1.008]"
                   />
                 </div>
               </div>
@@ -459,11 +470,11 @@ export const LandingPage = memo(function LandingPage({
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
               {/* Step 1 */}
-              <div className="p-6 rounded-2xl bg-white dark:bg-[#131620] border border-slate-200 dark:border-slate-800 shadow-sm text-center space-y-3">
-                <div className="w-12 h-12 mx-auto rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-xs">
+              <div className="group p-6 sm:p-7 rounded-2xl bg-white dark:bg-[#131620] border border-slate-200/90 dark:border-slate-800/90 shadow-xs hover:shadow-xl hover:shadow-indigo-500/5 dark:hover:shadow-indigo-950/20 hover:-translate-y-1 hover:border-indigo-500/40 dark:hover:border-indigo-500/30 transition-all duration-300 text-center space-y-3.5">
+                <div className="w-12 h-12 mx-auto rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-xs group-hover:scale-110 group-hover:rotate-2 transition-transform duration-300">
                   <Upload className="w-5 h-5" />
                 </div>
-                <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300">
+                <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 group-hover:bg-[hsl(245,79%,55%)] group-hover:text-white transition-colors duration-200">
                   1
                 </div>
                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
@@ -475,11 +486,11 @@ export const LandingPage = memo(function LandingPage({
               </div>
 
               {/* Step 2 */}
-              <div className="p-6 rounded-2xl bg-white dark:bg-[#131620] border border-slate-200 dark:border-slate-800 shadow-sm text-center space-y-3">
-                <div className="w-12 h-12 mx-auto rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800 flex items-center justify-center text-purple-600 dark:text-purple-400 shadow-xs">
+              <div className="group p-6 sm:p-7 rounded-2xl bg-white dark:bg-[#131620] border border-slate-200/90 dark:border-slate-800/90 shadow-xs hover:shadow-xl hover:shadow-indigo-500/5 dark:hover:shadow-indigo-950/20 hover:-translate-y-1 hover:border-indigo-500/40 dark:hover:border-indigo-500/30 transition-all duration-300 text-center space-y-3.5">
+                <div className="w-12 h-12 mx-auto rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800 flex items-center justify-center text-purple-600 dark:text-purple-400 shadow-xs group-hover:scale-110 group-hover:rotate-2 transition-transform duration-300">
                   <Sliders className="w-5 h-5" />
                 </div>
-                <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300">
+                <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 group-hover:bg-[hsl(245,79%,55%)] group-hover:text-white transition-colors duration-200">
                   2
                 </div>
                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
@@ -491,11 +502,11 @@ export const LandingPage = memo(function LandingPage({
               </div>
 
               {/* Step 3 */}
-              <div className="p-6 rounded-2xl bg-white dark:bg-[#131620] border border-slate-200 dark:border-slate-800 shadow-sm text-center space-y-3">
-                <div className="w-12 h-12 mx-auto rounded-xl bg-pink-50 dark:bg-pink-950/60 border border-pink-200 dark:border-pink-800 flex items-center justify-center text-pink-600 dark:text-pink-400 shadow-xs">
+              <div className="group p-6 sm:p-7 rounded-2xl bg-white dark:bg-[#131620] border border-slate-200/90 dark:border-slate-800/90 shadow-xs hover:shadow-xl hover:shadow-indigo-500/5 dark:hover:shadow-indigo-950/20 hover:-translate-y-1 hover:border-indigo-500/40 dark:hover:border-indigo-500/30 transition-all duration-300 text-center space-y-3.5">
+                <div className="w-12 h-12 mx-auto rounded-xl bg-pink-50 dark:bg-pink-950/60 border border-pink-200 dark:border-pink-800 flex items-center justify-center text-pink-600 dark:text-pink-400 shadow-xs group-hover:scale-110 group-hover:rotate-2 transition-transform duration-300">
                   <ImageIcon className="w-5 h-5" />
                 </div>
-                <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300">
+                <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 group-hover:bg-[hsl(245,79%,55%)] group-hover:text-white transition-colors duration-200">
                   3
                 </div>
                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
@@ -527,8 +538,8 @@ export const LandingPage = memo(function LandingPage({
                     'Copy directly to clipboard or export high-resolution PNG',
                     'Screen recording beautification with MP4 & WebM exports',
                   ].map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-emerald-500 mt-0.5 shrink-0" />
+                    <li key={i} className="group/item flex items-start gap-3 p-1.5 -mx-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors duration-150">
+                      <Check className="w-5 h-5 text-emerald-500 mt-0.5 shrink-0 group-hover/item:scale-110 transition-transform duration-150" />
                       <span className="text-slate-700 dark:text-slate-300 text-sm sm:text-base leading-snug">
                         {feature}
                       </span>
@@ -551,8 +562,8 @@ export const LandingPage = memo(function LandingPage({
                     'Works completely offline after assets are cached as a PWA',
                     'Safe client-side binary signature verification for security',
                   ].map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-emerald-500 mt-0.5 shrink-0" />
+                    <li key={i} className="group/item flex items-start gap-3 p-1.5 -mx-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors duration-150">
+                      <Check className="w-5 h-5 text-emerald-500 mt-0.5 shrink-0 group-hover/item:scale-110 transition-transform duration-150" />
                       <span className="text-slate-700 dark:text-slate-300 text-sm sm:text-base leading-snug">
                         {feature}
                       </span>
@@ -644,10 +655,10 @@ export const LandingPage = memo(function LandingPage({
               <Button
                 onClick={onStartCrafting}
                 size="lg"
-                className="bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,47%)] text-white text-base font-medium px-8 py-5 h-auto rounded-xl shadow-lg shadow-[hsl(245,79%,55%)]/20 transition-all hover:scale-[1.01]"
+                className="group bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,47%)] text-white text-base font-medium px-8 py-5 h-auto rounded-xl shadow-lg shadow-[hsl(245,79%,55%)]/20 transition-all duration-200 hover:scale-[1.01] active:scale-[0.98]"
               >
                 <span>Start Crafting Now — Free</span>
-                <ArrowRight className="w-4 h-4 ml-2" />
+                <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-200 group-hover:translate-x-1" />
               </Button>
             </div>
           </div>
