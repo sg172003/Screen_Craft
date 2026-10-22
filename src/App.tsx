@@ -52,14 +52,18 @@ function AppContent() {
         }
       >
         {showEditor ? (
-          <EditorPage onBack={handleBack} />
+          <EditorPage onBack={handleBack} onInstallClick={pwa.openModal} />
         ) : (
-          <LandingPage onStartCrafting={handleStartCrafting} />
+          <LandingPage
+            onStartCrafting={handleStartCrafting}
+            onInstallClick={pwa.openModal}
+            isInstalled={pwa.isInstalled}
+          />
         )}
       </Suspense>
 
       {/* PWA Install Modal (Downloadable popup, cancelable with snooze support) */}
-      {!showEditor && <PWAInstallModal pwa={pwa} />}
+      <PWAInstallModal pwa={pwa} />
       <AnalyticsConsent />
     </>
   );

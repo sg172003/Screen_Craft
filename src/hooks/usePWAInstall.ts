@@ -43,6 +43,12 @@ export interface UsePWAInstallReturn {
   isDismissed: boolean;
   /** Whether the user is on iOS (shows manual instructions instead) */
   isIOS: boolean;
+  /** Whether the install modal is currently open */
+  isModalOpen: boolean;
+  /** Open the install modal on demand */
+  openModal: () => void;
+  /** Close the install modal */
+  closeModal: () => void;
   /** Trigger the native install prompt. Returns true if accepted. */
   promptInstall: () => Promise<boolean>;
   /** Dismiss the popup, optionally permanently */
@@ -54,6 +60,15 @@ export function usePWAInstall(): UsePWAInstallReturn {
   const [isInstallable, setIsInstallable] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isDismissed, setIsDismissedState] = useState(() => isDismissedPermanently());
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = useCallback(() => {
+    setIsModalOpen(true);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
 
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !('MSStream' in window);
 
@@ -116,6 +131,9 @@ export function usePWAInstall(): UsePWAInstallReturn {
     isInstalled,
     isDismissed,
     isIOS,
+    isModalOpen,
+    openModal,
+    closeModal,
     promptInstall,
     dismissPrompt,
   };

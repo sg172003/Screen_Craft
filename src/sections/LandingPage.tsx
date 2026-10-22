@@ -9,6 +9,7 @@ import {
   Laptop,
   Smartphone,
   Maximize2,
+  Download,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -24,6 +25,8 @@ import type { CanvasSettings } from '@/types';
 
 interface LandingPageProps {
   onStartCrafting: () => void;
+  onInstallClick?: () => void;
+  isInstalled?: boolean;
 }
 
 // Clean sample screenshot for the live preview
@@ -102,7 +105,11 @@ const LIVE_PRESET_COLORS = [
   { name: 'Obsidian Noir', start: '#1e2229', end: '#090a0d' },
 ];
 
-export const LandingPage = memo(function LandingPage({ onStartCrafting }: LandingPageProps) {
+export const LandingPage = memo(function LandingPage({
+  onStartCrafting,
+  onInstallClick,
+  isInstalled = false,
+}: LandingPageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
 
@@ -219,6 +226,19 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
             {/* Dark / Light Mode Toggle */}
             <ThemeToggle />
 
+            {/* Install App Button */}
+            {!isInstalled && onInstallClick && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onInstallClick}
+                className="hidden sm:inline-flex items-center text-xs font-medium h-9 px-3 rounded-lg border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-all shadow-2xs"
+              >
+                <Download className="w-3.5 h-3.5 mr-1.5 text-[hsl(245,79%,55%)]" />
+                <span>Install App</span>
+              </Button>
+            )}
+
             {/* Launch Action */}
             <Button
               onClick={onStartCrafting}
@@ -259,11 +279,23 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
               <Button
                 onClick={onStartCrafting}
                 size="lg"
-                className="w-full sm:w-auto h-12 px-8 bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,47%)] text-white text-base font-medium rounded-xl shadow-lg shadow-[hsl(245,79%,55%)]/20 transition-all hover:scale-[1.01]"
+                className="w-full sm:w-auto h-12 px-7 bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,47%)] text-white text-base font-medium rounded-xl shadow-lg shadow-[hsl(245,79%,55%)]/20 transition-all hover:scale-[1.01]"
               >
-                <span>Start Crafting — Free & No Signup</span>
+                <span>Start Crafting — Free</span>
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
+
+              {!isInstalled && onInstallClick && (
+                <Button
+                  onClick={onInstallClick}
+                  variant="outline"
+                  size="lg"
+                  className="w-full sm:w-auto h-12 px-6 rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131620] hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-sm font-medium transition-all shadow-xs"
+                >
+                  <Download className="w-4 h-4 mr-2 text-[hsl(245,79%,55%)]" />
+                  <span>Download App (PWA)</span>
+                </Button>
+              )}
 
               <div className="inline-flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-white dark:bg-[#131620] px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
                 <span className="tactile-key">⌘V</span>
@@ -654,6 +686,15 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
             <a href="/privacy" className="hover:text-slate-900 dark:hover:text-white transition-colors">
               Privacy
             </a>
+            {onInstallClick && !isInstalled && (
+              <button
+                type="button"
+                onClick={onInstallClick}
+                className="hover:text-slate-900 dark:hover:text-white transition-colors text-indigo-600 dark:text-indigo-400 font-medium"
+              >
+                Install App (PWA)
+              </button>
+            )}
             {isAnalyticsConfigured() && (
               <button
                 type="button"

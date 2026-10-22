@@ -30,6 +30,7 @@ import { DEFAULT_SETTINGS } from '@/types';
 
 interface EditorPageProps {
   onBack: () => void;
+  onInstallClick?: () => void;
 }
 
 function formatTime(seconds: number): string {
@@ -39,7 +40,7 @@ function formatTime(seconds: number): string {
   return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 }
 
-export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) {
+export const EditorPage = memo(function EditorPage({ onBack, onInstallClick }: EditorPageProps) {
   const [settings, setSettings] = useState<CanvasSettings>(DEFAULT_SETTINGS);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -285,6 +286,20 @@ export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) 
           >
             Reset
           </Button>
+
+          {/* Install App button */}
+          {onInstallClick && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onInstallClick}
+              className="hidden md:flex text-white/70 hover:text-white hover:bg-white/10 h-8 px-2.5 text-xs items-center gap-1.5"
+              title="Install ScreenCraft as Desktop / Mobile App"
+            >
+              <Download className="w-3.5 h-3.5 text-[hsl(245,79%,65%)]" />
+              <span>Install App</span>
+            </Button>
+          )}
 
           {/* Video snapshot button */}
           {mediaType === 'video' && video && (
