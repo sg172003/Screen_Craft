@@ -8,16 +8,16 @@
 declare global {
   interface Window {
     dataLayer: unknown[];
-    gtag: (...args: unknown[]) => void;
+    gtag?: (...args: unknown[]) => void;
   }
 }
 
-const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined;
+const GA_MEASUREMENT_ID = (import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined) || 'G-Z6ZR2HLGF6';
 const ANALYTICS_CONSENT_KEY = 'screencraft_analytics_consent';
 const ANALYTICS_SETTINGS_EVENT = 'screencraft:analytics-settings';
 
 let initialized = false;
-let analyticsEnabled = false;
+let analyticsEnabled = true;
 
 export function isAnalyticsConfigured(): boolean {
   return Boolean(GA_MEASUREMENT_ID);
@@ -53,11 +53,15 @@ export function saveAnalyticsConsent(allowed: boolean): void {
 
   analyticsEnabled = allowed;
   if (allowed) {
-    initGA();
+    if (window.gtag) {
+      window.gtag('consent', 'update', {
+        analytics_storage: 'granted',
+      });
+    }
     return;
   }
 
-  if (initialized && window.gtag) {
+  if (window.gtag) {
     window.gtag('consent', 'update', {
       analytics_storage: 'denied',
       ad_storage: 'denied',
@@ -68,47 +72,48 @@ export function saveAnalyticsConsent(allowed: boolean): void {
 }
 
 /**
- * Initialize Google Analytics by injecting the gtag.js script.
- * Call once at app startup (e.g. in main.tsx or App.tsx).
+ * Initialize Google Analytics.
+ * Handles both pre-injected gtag (from index.html <head>) and dynamic injection fallback.
  */
 export function initGA(): void {
-  if (getAnalyticsConsent() !== true || !GA_MEASUREMENT_ID) return;
+  if (initialized && window.gtag) return;
 
-  try {
-    if (initialized) {
+  // If user explicitly denied, respect their choice
+  if (getAnalyticsConsent() === false) {
+    if (window.gtag) {
       window.gtag('consent', 'update', {
-        analytics_storage: 'granted',
+        analytics_storage: 'denied',
         ad_storage: 'denied',
         ad_user_data: 'denied',
         ad_personalization: 'denied',
       });
+    }
+    analyticsEnabled = false;
+    initialized = true;
+    return;
+  }
+
+  try {
+    // If window.gtag was already initialized in index.html <head>
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      initialized = true;
       analyticsEnabled = true;
       return;
     }
 
-    // Initialize dataLayer
+    if (!GA_MEASUREMENT_ID) {
+      console.warn('[Analytics] GA_MEASUREMENT_ID not set. Analytics disabled.');
+      return;
+    }
+
+    // Dynamic injection fallback
     window.dataLayer = window.dataLayer || [];
     window.gtag = function gtag(...args: unknown[]) {
       window.dataLayer.push(args);
     };
     window.gtag('js', new Date());
-    window.gtag('consent', 'default', {
-      analytics_storage: 'denied',
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied',
-    });
-    window.gtag('consent', 'update', {
-      analytics_storage: 'granted',
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied',
-    });
-    window.gtag('config', GA_MEASUREMENT_ID, {
-      send_page_view: false, // We'll send page views manually for SPA
-    });
+    window.gtag('config', GA_MEASUREMENT_ID);
 
-    // Inject gtag.js script
     const script = document.createElement('script');
     script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
     script.async = true;
@@ -128,7 +133,7 @@ export function initGA(): void {
  * Track a virtual page view (for SPA navigation).
  */
 export function trackPageView(path: string, title?: string): void {
-  if (!analyticsEnabled || !initialized || !window.gtag) return;
+  if (!analyticsEnabled || getAnalyticsConsent() === false || !window.gtag) return;
   try {
     window.gtag('event', 'page_view', {
       page_path: path,
@@ -146,7 +151,7 @@ export function trackEvent(
   eventName: string,
   params?: Record<string, string | number | boolean>
 ): void {
-  if (!analyticsEnabled || !initialized || !window.gtag) return;
+  if (!analyticsEnabled || getAnalyticsConsent() === false || !window.gtag) return;
   try {
     window.gtag('event', eventName, params);
   } catch {
