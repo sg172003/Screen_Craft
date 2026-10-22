@@ -243,7 +243,7 @@ export const EditorPage = memo(function EditorPage({ onBack }: EditorPageProps) 
           </button>
           <div className="w-px h-6 bg-white/10 hidden sm:block" />
           <div className="flex items-center gap-2 min-w-0">
-            <img src="/logo.png" alt="ScreenCraft" className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" />
+            <img src="/logo.png?v=2" alt="ScreenCraft" className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" />
             <span className="font-semibold text-white/95 text-sm sm:text-base tracking-tight truncate">
               ScreenCraft
             </span>

@@ -3,7 +3,7 @@
  * Provides offline caching and enables PWA install prompt.
  */
 
-const CACHE_NAME = 'screencraft-v1';
+const CACHE_NAME = 'screencraft-v2';
 
 // App shell assets to cache for offline use
 const APP_SHELL = [

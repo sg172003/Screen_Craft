@@ -183,7 +183,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
           <div className="flex items-center gap-2.5">
             <span className="logo-wrap" tabIndex={-1}>
               <img
-                src="/logo.png"
+                src="/logo.png?v=2"
                 alt="ScreenCraft logo"
                 width="32"
                 height="32"
@@ -628,7 +628,7 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
           {/* Logo & Brand */}
           <div className="flex items-center gap-2">
             <img
-              src="/logo.png"
+              src="/logo.png?v=2"
               alt="ScreenCraft logo"
               width="24"
               height="24"

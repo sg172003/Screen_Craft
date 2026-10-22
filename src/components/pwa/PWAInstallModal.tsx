@@ -99,7 +99,7 @@ export const PWAInstallModal = memo(function PWAInstallModal({ pwa }: PWAInstall
 
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[hsl(245,79%,55%)] to-[hsl(280,70%,55%)] flex items-center justify-center shadow-lg shadow-[hsl(245,79%,55%)]/30">
-                <img src="/logo.png" alt="ScreenCraft" className="w-8 h-8 rounded-lg" />
+                <img src="/logo.png?v=2" alt="ScreenCraft" className="w-8 h-8 rounded-lg" />
               </div>
               <div>
                 <h2 className="text-lg font-semibold text-white">Install ScreenCraft</h2>
