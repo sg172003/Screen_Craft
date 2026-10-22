@@ -23,8 +23,56 @@
 
 /* Custom focus styles */
 *:focus-visible {
-  outline: 2px solid hsl(245, 79%, 55%);
+  outline: 2px solid #ff6b35;
   outline-offset: 2px;
+}
+
+/* Industrial Workbench Design Utilities */
+.workbench-panel {
+  background-color: #111317;
+  border: 1px solid #22252c;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.dark .workbench-panel {
+  background-color: #111317;
+  border-color: #22252c;
+}
+
+.workbench-card {
+  background-color: #15181e;
+  border: 1px solid #252830;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 10px 24px -10px rgba(0, 0, 0, 0.5);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.workbench-card:hover {
+  border-color: #3b3f4c;
+}
+
+.workbench-rig-shadow {
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.workbench-badge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+.tactile-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+  background: #1c1f26;
+  border: 1px solid #2e333d;
+  color: #c4c9d4;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 /* Prevent text selection on UI elements */
