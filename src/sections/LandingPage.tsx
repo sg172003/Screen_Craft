@@ -1,13 +1,14 @@
 import { memo, useEffect, useRef, useState, useCallback } from 'react';
 import {
   ArrowRight,
+  Upload,
+  Sliders,
+  Image as ImageIcon,
+  Check,
   Monitor,
-  Smartphone,
   Laptop,
-  Video,
-  ShieldCheck,
+  Smartphone,
   Maximize2,
-  Layers,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -25,108 +26,105 @@ interface LandingPageProps {
   onStartCrafting: () => void;
 }
 
-// Crisp, high-contrast sample UI mockup SVG for the live interactive stage
-const SAMPLE_MOCKUP_SVG = `data:image/svg+xml,${encodeURIComponent(`
-  <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="600" viewBox="0 0 1024 600">
-    <rect width="1024" height="600" fill="#0d0f12"/>
-    <!-- Top Bar -->
-    <rect width="1024" height="52" fill="#14171d"/>
-    <line x1="0" y1="52" x2="1024" y2="52" stroke="#22262f" stroke-width="1"/>
+// Clean sample screenshot for the live preview
+const DEMO_SCREENSHOT = `data:image/svg+xml,${encodeURIComponent(`
+  <svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+    <rect width="960" height="540" fill="#f8fafc"/>
+    <rect width="960" height="56" fill="#ffffff"/>
+    <line x1="0" y1="56" x2="960" y2="56" stroke="#e2e8f0" stroke-width="1"/>
     
     <!-- Logo / Brand element -->
-    <rect x="24" y="16" width="20" height="20" rx="5" fill="#ff6b35"/>
-    <rect x="54" y="21" width="96" height="10" rx="4" fill="#f4f5f7"/>
+    <rect x="36" y="18" width="20" height="20" rx="5" fill="#4f46e5"/>
+    <rect x="68" y="23" width="90" height="10" rx="4" fill="#0f172a"/>
     
     <!-- Search pill -->
-    <rect x="362" y="12" width="300" height="28" rx="6" fill="#1b1e26" stroke="#2a2e39" stroke-width="1"/>
-    <circle cx="382" cy="26" r="5" fill="none" stroke="#606674" stroke-width="1.5"/>
-    <line x1="386" y1="30" x2="391" y2="35" stroke="#606674" stroke-width="1.5" stroke-linecap="round"/>
-    <rect x="402" y="22" width="120" height="8" rx="3" fill="#606674"/>
+    <rect x="330" y="14" width="300" height="28" rx="6" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+    <circle cx="348" cy="28" r="5" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+    <line x1="352" y1="32" x2="357" y2="37" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
+    <rect x="368" y="24" width="110" height="8" rx="3" fill="#94a3b8"/>
 
     <!-- Right Controls -->
-    <rect x="880" y="15" width="50" height="22" rx="4" fill="#20242e"/>
-    <rect x="942" y="15" width="58" height="22" rx="4" fill="#ff6b35"/>
-    <rect x="954" y="22" width="34" height="8" rx="3" fill="#ffffff"/>
+    <rect x="800" y="17" width="54" height="22" rx="5" fill="#f1f5f9"/>
+    <rect x="866" y="17" width="60" height="22" rx="5" fill="#4f46e5"/>
 
-    <!-- Left Sidebar -->
-    <rect x="0" y="53" width="220" height="547" fill="#111318"/>
-    <line x1="220" y1="53" x2="220" y2="600" stroke="#22262f" stroke-width="1"/>
+    <!-- Sidebar -->
+    <rect x="0" y="57" width="200" height="483" fill="#ffffff"/>
+    <line x1="200" y1="57" x2="200" y2="540" stroke="#e2e8f0" stroke-width="1"/>
     
     <!-- Nav Items -->
-    <rect x="18" y="76" width="184" height="32" rx="6" fill="#1c2029"/>
-    <rect x="32" y="87" width="10" height="10" rx="2" fill="#ff6b35"/>
-    <rect x="52" y="88" width="80" height="8" rx="3" fill="#f4f5f7"/>
+    <rect x="18" y="80" width="164" height="30" rx="6" fill="#eef2ff"/>
+    <rect x="32" y="90" width="10" height="10" rx="2" fill="#4f46e5"/>
+    <rect x="52" y="91" width="70" height="8" rx="3" fill="#4f46e5"/>
 
-    <rect x="32" y="132" width="10" height="10" rx="2" fill="#464b58"/>
-    <rect x="52" y="133" width="96" height="8" rx="3" fill="#8e94a0"/>
+    <rect x="32" y="130" width="10" height="10" rx="2" fill="#cbd5e1"/>
+    <rect x="52" y="131" width="85" height="8" rx="3" fill="#64748b"/>
 
-    <rect x="32" y="172" width="10" height="10" rx="2" fill="#464b58"/>
-    <rect x="52" y="173" width="70" height="8" rx="3" fill="#8e94a0"/>
+    <rect x="32" y="170" width="10" height="10" rx="2" fill="#cbd5e1"/>
+    <rect x="52" y="171" width="65" height="8" rx="3" fill="#64748b"/>
 
-    <rect x="32" y="212" width="10" height="10" rx="2" fill="#464b58"/>
-    <rect x="52" y="213" width="110" height="8" rx="3" fill="#8e94a0"/>
+    <rect x="32" y="210" width="10" height="10" rx="2" fill="#cbd5e1"/>
+    <rect x="52" y="211" width="95" height="8" rx="3" fill="#64748b"/>
 
-    <!-- Main Content Stage -->
-    <rect x="256" y="85" width="280" height="18" rx="5" fill="#f4f5f7"/>
-    <rect x="256" y="115" width="420" height="10" rx="4" fill="#606674"/>
+    <!-- Main Content Area -->
+    <rect x="236" y="85" width="240" height="16" rx="4" fill="#0f172a"/>
+    <rect x="236" y="112" width="360" height="10" rx="4" fill="#94a3b8"/>
 
-    <!-- Metric Panels -->
-    <rect x="256" y="155" width="224" height="100" rx="8" fill="#15181f" stroke="#22262f" stroke-width="1"/>
-    <rect x="274" y="175" width="70" height="8" rx="3" fill="#8e94a0"/>
-    <rect x="274" y="195" width="100" height="24" rx="4" fill="#f4f5f7"/>
-    <rect x="274" y="231" width="54" height="6" rx="2" fill="#10b981"/>
+    <!-- Cards Row -->
+    <rect x="236" y="145" width="210" height="90" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+    <rect x="252" y="165" width="60" height="8" rx="3" fill="#64748b"/>
+    <rect x="252" y="185" width="90" height="20" rx="4" fill="#0f172a"/>
+    <rect x="252" y="215" width="50" height="6" rx="2" fill="#10b981"/>
 
-    <rect x="496" y="155" width="224" height="100" rx="8" fill="#15181f" stroke="#22262f" stroke-width="1"/>
-    <rect x="514" y="175" width="80" height="8" rx="3" fill="#8e94a0"/>
-    <rect x="514" y="195" width="90" height="24" rx="4" fill="#f4f5f7"/>
-    <rect x="514" y="231" width="60" height="6" rx="2" fill="#3b82f6"/>
+    <rect x="466" y="145" width="210" height="90" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+    <rect x="482" y="165" width="70" height="8" rx="3" fill="#64748b"/>
+    <rect x="482" y="185" width="80" height="20" rx="4" fill="#0f172a"/>
+    <rect x="482" y="215" width="55" height="6" rx="2" fill="#3b82f6"/>
 
-    <rect x="736" y="155" width="248" height="100" rx="8" fill="#15181f" stroke="#22262f" stroke-width="1"/>
-    <rect x="754" y="175" width="70" height="8" rx="3" fill="#8e94a0"/>
-    <rect x="754" y="195" width="110" height="24" rx="4" fill="#f4f5f7"/>
-    <rect x="754" y="231" width="48" height="6" rx="2" fill="#ff6b35"/>
+    <rect x="696" y="145" width="224" height="90" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+    <rect x="712" y="165" width="65" height="8" rx="3" fill="#64748b"/>
+    <rect x="712" y="185" width="100" height="20" rx="4" fill="#0f172a"/>
+    <rect x="712" y="215" width="45" height="6" rx="2" fill="#8b5cf6"/>
 
-    <!-- Data Chart Block -->
-    <rect x="256" y="275" width="728" height="280" rx="8" fill="#15181f" stroke="#22262f" stroke-width="1"/>
-    <rect x="280" y="300" width="120" height="12" rx="4" fill="#f4f5f7"/>
-    
-    <!-- Chart waveform -->
-    <path d="M 280 480 Q 360 420 440 450 T 600 360 T 760 410 T 920 330" fill="none" stroke="#ff6b35" stroke-width="3"/>
-    <path d="M 280 480 Q 360 420 440 450 T 600 360 T 760 410 T 920 330 L 920 520 L 280 520 Z" fill="#ff6b35" opacity="0.08"/>
+    <!-- Content Chart Block -->
+    <rect x="236" y="255" width="684" height="255" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+    <rect x="260" y="280" width="120" height="12" rx="4" fill="#0f172a"/>
+    <path d="M 260 450 Q 340 380 420 410 T 580 340 T 720 380 T 860 300" fill="none" stroke="#4f46e5" stroke-width="3"/>
+    <path d="M 260 450 Q 340 380 420 410 T 580 340 T 720 380 T 860 300 L 860 480 L 260 480 Z" fill="#4f46e5" opacity="0.08"/>
   </svg>
 `)}`;
 
-const COLOR_PRESETS = [
-  { name: 'Obsidian Noir', start: '#16191f', end: '#090a0d', type: 'gradient' as const },
-  { name: 'Titanium Slate', start: '#334155', end: '#0f172a', type: 'gradient' as const },
-  { name: 'Industrial Amber', start: '#9a3412', end: '#431407', type: 'gradient' as const },
-  { name: 'Minimal Graphite', start: '#1e2229', end: '#121418', type: 'gradient' as const },
-  { name: 'Studio Frost', start: '#38bdf8', end: '#1e1b4b', type: 'gradient' as const },
+const LIVE_PRESET_COLORS = [
+  { name: 'Indigo Dream', start: '#4f46e5', end: '#7c3aed' },
+  { name: 'Ocean Breeze', start: '#0284c7', end: '#2563eb' },
+  { name: 'Sunset Glow', start: '#f43f5e', end: '#fb923c' },
+  { name: 'Emerald Forest', start: '#059669', end: '#0d9488' },
+  { name: 'Clean Slate', start: '#475569', end: '#1e293b' },
+  { name: 'Obsidian Noir', start: '#1e2229', end: '#090a0d' },
 ];
 
 export const LandingPage = memo(function LandingPage({ onStartCrafting }: LandingPageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
 
-  // Live interactive hero stage state
+  // Interactive Live Preview Controls state
   const [frameType, setFrameType] = useState<'browser' | 'desktop' | 'mobile'>('browser');
-  const [activeColor, setActiveColor] = useState(0);
-  const [padding, setPadding] = useState(40);
-  const [frameDarkMode, setFrameDarkMode] = useState(true);
+  const [activeColorIdx, setActiveColorIdx] = useState(0);
+  const [padding, setPadding] = useState(36);
+  const [frameDarkMode, setFrameDarkMode] = useState(false);
 
-  // Load sample image once
+  // Load sample screenshot
   useEffect(() => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
-    img.src = SAMPLE_MOCKUP_SVG;
+    img.src = DEMO_SCREENSHOT;
     img.onload = () => {
       imageRef.current = img;
-      renderCurrentStage();
+      drawCanvas();
     };
   }, []);
 
-  // Re-render canvas whenever controls change
-  const renderCurrentStage = useCallback(() => {
+  // Live Canvas render routine
+  const drawCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     const img = imageRef.current;
     if (!canvas || !img) return;
@@ -134,219 +132,218 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const selectedColor = COLOR_PRESETS[activeColor];
     const isMobile = frameType === 'mobile';
+    const canvasWidth = isMobile ? 600 : 960;
+    const canvasHeight = isMobile ? 800 : 580;
 
-    const stageWidth = isMobile ? 640 : 1080;
-    const stageHeight = isMobile ? 860 : 660;
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
 
-    canvas.width = stageWidth;
-    canvas.height = stageHeight;
+    const chosenColor = LIVE_PRESET_COLORS[activeColorIdx];
 
     const settings: CanvasSettings = {
-      width: stageWidth,
-      height: stageHeight,
+      width: canvasWidth,
+      height: canvasHeight,
       padding: padding,
       cornerRadius: isMobile ? 32 : 12,
-      shadowIntensity: 28,
+      shadowIntensity: 22,
       shadowEnabled: true,
       backgroundType: 'gradient',
-      backgroundColor: selectedColor.start,
-      gradientStart: selectedColor.start,
-      gradientEnd: selectedColor.end,
-      gradientDirection: 145,
+      backgroundColor: chosenColor.start,
+      gradientStart: chosenColor.start,
+      gradientEnd: chosenColor.end,
+      gradientDirection: 135,
       blurAmount: 20,
       frameType: frameType,
       frameDarkMode: frameDarkMode,
       exportScale: 1,
     };
 
-    renderToCanvas(ctx, stageWidth, stageHeight, settings, img);
-  }, [activeColor, frameType, padding, frameDarkMode]);
+    renderToCanvas(ctx, canvasWidth, canvasHeight, settings, img);
+  }, [activeColorIdx, frameType, padding, frameDarkMode]);
 
   useEffect(() => {
-    renderCurrentStage();
-  }, [renderCurrentStage]);
+    drawCanvas();
+  }, [drawCanvas]);
 
   return (
-    <div className="min-h-screen bg-[#090a0c] text-[#f4f5f7] selection:bg-[#ff6b35]/25 selection:text-[#ff8f66]">
-      {/* Accessibility skip link */}
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0b0d13] text-slate-900 dark:text-slate-100 transition-colors duration-200">
+      {/* Skip to Content */}
       <a
-        href="#workbench"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[#ff6b35] focus:text-white focus:rounded focus:font-mono focus:text-xs"
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[hsl(245,79%,55%)] focus:text-white focus:rounded-md focus:shadow-lg focus:text-sm font-medium"
       >
-        Skip to Workbench
+        Skip to content
       </a>
 
-      {/* Top Precision Navigation */}
-      <header className="sticky top-0 z-50 bg-[#090a0c]/85 backdrop-blur-md border-b border-[#1c1f26]">
+      {/* Navigation */}
+      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-[#0b0d13]/85 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
-          {/* Brand Mark */}
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#14161c] border border-[#272b35] flex items-center justify-center shadow-xs">
-              <span className="font-mono font-bold text-sm text-[#ff6b35]">S</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-base tracking-tight text-white">ScreenCraft</span>
-              <span className="hidden md:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono tracking-wide bg-[#171920] border border-[#262a34] text-[#8e94a0]">
-                STUDIO v2.5
-              </span>
-            </div>
+          {/* Logo & Brand Identity */}
+          <div className="flex items-center gap-2.5">
+            <span className="logo-wrap" tabIndex={-1}>
+              <img
+                src="/logo.png"
+                alt="ScreenCraft logo"
+                width="32"
+                height="32"
+                className="logo-glow w-7 h-7 sm:w-8 sm:h-8 rounded-lg"
+              />
+            </span>
+            <span className="font-bold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white">
+              ScreenCraft
+            </span>
           </div>
 
-          {/* Center Navigation Links */}
-          <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-[#8e94a0]">
-            <a href="#workbench" className="hover:text-white transition-colors">
-              Live Stage
+          {/* Navigation Links */}
+          <div className="flex items-center gap-2 sm:gap-6">
+            <a
+              href="#how-it-works"
+              className="hidden sm:block text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              How it works
             </a>
-            <a href="#capabilities" className="hover:text-white transition-colors">
-              Capabilities
+            <a
+              href="#features"
+              className="hidden md:block text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              Features
             </a>
-            <a href="#comparison" className="hover:text-white transition-colors">
-              Architecture
+            <a
+              href="#faq"
+              className="hidden sm:block text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              FAQ
             </a>
-            <a href="#faq" className="hover:text-white transition-colors">
-              Documentation
-            </a>
-          </nav>
 
-          {/* Right Action Stack */}
-          <div className="flex items-center gap-3">
-            <span className="hidden lg:flex items-center gap-1.5 text-xs font-mono text-[#8e94a0] bg-[#121418] px-2.5 py-1 rounded-md border border-[#20232c]">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              100% In-Browser
-            </span>
+            {/* Dark / Light Mode Toggle */}
             <ThemeToggle />
+
+            {/* Launch Action */}
             <Button
               onClick={onStartCrafting}
               size="sm"
-              className="bg-[#f4f5f7] hover:bg-white text-[#090a0c] font-medium text-xs sm:text-sm px-4 h-9 rounded-lg shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,47%)] text-white text-xs sm:text-sm font-medium px-3.5 sm:px-4 h-9 rounded-lg shadow-sm transition-all"
             >
-              <span>Launch Studio</span>
-              <span className="hidden sm:inline-block ml-1.5 text-[10px] font-mono opacity-60">↵</span>
+              <span className="hidden sm:inline">Launch Editor</span>
+              <span className="sm:hidden">Start</span>
+              <ArrowRight className="w-3.5 h-3.5 ml-1 hidden sm:inline" />
             </Button>
           </div>
         </div>
-      </header>
+      </nav>
 
-      <main id="workbench" tabIndex={-1} className="outline-none">
-        {/* Hero Section — The Architectural Framing Stage */}
-        <section className="pt-16 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-6">
-          <div className="max-w-5xl mx-auto text-center space-y-6">
-            {/* Status Pill */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#13151b] border border-[#222631] text-xs font-mono text-[#9ca3af]">
-              <span className="text-[#ff6b35]">●</span>
-              <span>Zero Server Transfer</span>
-              <span className="text-[#374151]">|</span>
-              <span className="text-white font-medium">Native 3× Retina Rendering</span>
-            </div>
-
-            {/* Main Headline (Pure typographic authority, no gradient slop) */}
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-[1.1] max-w-4xl mx-auto">
-              Turn raw screen captures into studio-grade visuals in seconds.
+      <main id="main-content" tabIndex={-1} className="outline-none">
+        {/* Hero Section */}
+        <section className="pt-12 sm:pt-20 pb-8 sm:pb-12 px-4 sm:px-6">
+          <div className="max-w-4xl mx-auto text-center space-y-4 sm:space-y-6">
+            {/* Main Headline */}
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
+              Turn raw screenshots & recordings into{' '}
+              <span className="text-[hsl(245,79%,55%)] dark:text-indigo-400">
+                professional visuals.
+              </span>
             </h1>
 
-            {/* Direct Value Narrative */}
-            <p className="text-sm sm:text-lg text-[#8e94a0] max-w-2xl mx-auto leading-relaxed">
-              Wrap raw screenshots and screen recordings in authentic macOS, desktop, or mobile frames. Add measured canvas padding, multi-stop drop shadows, and export crisp 3× Retina PNGs or MP4 videos — entirely inside your browser memory.
+            {/* Core Tagline */}
+            <p className="text-base sm:text-xl text-slate-600 dark:text-slate-300 max-w-xl mx-auto font-medium">
+              We beautify, not modify.
             </p>
 
-            {/* Action Ribbon */}
+            <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 max-w-lg mx-auto">
+              Add browser or device frames, clean backgrounds, and export high-resolution PNGs or videos. Everything runs completely in your browser.
+            </p>
+
+            {/* CTA Group */}
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
               <Button
                 onClick={onStartCrafting}
                 size="lg"
-                className="w-full sm:w-auto h-12 px-7 bg-[#ff6b35] hover:bg-[#e05622] text-white font-medium text-sm sm:text-base rounded-xl shadow-lg shadow-[#ff6b35]/20 transition-all hover:translate-y-[-1px]"
+                className="w-full sm:w-auto h-12 px-8 bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,47%)] text-white text-base font-medium rounded-xl shadow-lg shadow-[hsl(245,79%,55%)]/20 transition-all hover:scale-[1.01]"
               >
-                <span>Start Crafting — No Signup</span>
+                <span>Start Crafting — Free & No Signup</span>
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
 
-              <div className="flex items-center gap-2 text-xs font-mono text-[#8e94a0] px-3 py-2.5 rounded-xl bg-[#12141a] border border-[#222530]">
+              <div className="inline-flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-white dark:bg-[#131620] px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
                 <span className="tactile-key">⌘V</span>
                 <span>or</span>
                 <span className="tactile-key">Ctrl+V</span>
-                <span className="text-[#c4c9d4]">to paste image directly</span>
+                <span>to paste screenshot</span>
               </div>
-            </div>
-
-            {/* Format specifier line */}
-            <div className="flex items-center justify-center gap-4 text-xs font-mono text-[#626875] pt-1">
-              <span>INPUTS: PNG &bull; JPG &bull; WebP &bull; MP4 &bull; WebM</span>
-              <span>&bull;</span>
-              <span>OUTPUTS: 1× &bull; 2× &bull; 3× RETINA PNG &bull; VIDEO</span>
             </div>
           </div>
         </section>
 
-        {/* Live Interactive Framing Workbench (Centerpiece Demo) */}
-        <section className="pb-20 sm:pb-28 px-4 sm:px-6">
-          <div className="max-w-6xl mx-auto">
-            {/* Workbench Frame Chassis */}
-            <div className="rounded-2xl bg-[#101217] border border-[#222631] shadow-2xl overflow-hidden">
-              {/* Tactical Rig Header Controls */}
-              <div className="bg-[#14171e] px-4 sm:px-6 py-3.5 border-b border-[#222631] flex flex-wrap items-center justify-between gap-4">
-                {/* Frame Switcher */}
-                <div className="flex items-center gap-1.5 bg-[#0a0c0f] p-1 rounded-lg border border-[#222631]">
+        {/* Interactive Live Preview Component (Loved by user, fully responsive & theme adaptive) */}
+        <section aria-label="Interactive screenshot preview" className="py-6 sm:py-10 px-4 sm:px-6">
+          <div className="max-w-5xl mx-auto">
+            <div className="bg-white dark:bg-[#131620] border border-slate-200/90 dark:border-slate-800/90 rounded-2xl shadow-xl overflow-hidden transition-colors">
+              {/* Interactive Toolbar */}
+              <div className="p-3 sm:p-4 bg-slate-50/80 dark:bg-[#161a26]/80 border-b border-slate-200/80 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
+                {/* Frame Selectors */}
+                <div className="flex items-center gap-1 bg-white dark:bg-[#0c0e14] p-1 rounded-lg border border-slate-200 dark:border-slate-800 shadow-xs">
                   <button
                     type="button"
                     onClick={() => setFrameType('browser')}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
                       frameType === 'browser'
-                        ? 'bg-[#1c202a] text-white shadow-xs'
-                        : 'text-[#8e94a0] hover:text-white'
+                        ? 'bg-[hsl(245,79%,55%)] text-white shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
                     <Monitor className="w-3.5 h-3.5" />
-                    <span>macOS Browser</span>
+                    <span>Browser</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setFrameType('desktop')}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
                       frameType === 'desktop'
-                        ? 'bg-[#1c202a] text-white shadow-xs'
-                        : 'text-[#8e94a0] hover:text-white'
+                        ? 'bg-[hsl(245,79%,55%)] text-white shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
                     <Laptop className="w-3.5 h-3.5" />
-                    <span>Desktop Window</span>
+                    <span>Desktop</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setFrameType('mobile')}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
                       frameType === 'mobile'
-                        ? 'bg-[#1c202a] text-white shadow-xs'
-                        : 'text-[#8e94a0] hover:text-white'
+                        ? 'bg-[hsl(245,79%,55%)] text-white shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
                     <Smartphone className="w-3.5 h-3.5" />
-                    <span>Mobile Phone</span>
+                    <span>Mobile</span>
                   </button>
                 </div>
 
                 {/* Color Preset Palette */}
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono text-[#686f7d] hidden sm:inline">TONE:</span>
-                  <div className="flex items-center gap-1.5 bg-[#0a0c0f] p-1 rounded-lg border border-[#222631]">
-                    {COLOR_PRESETS.map((preset, idx) => (
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium hidden sm:inline">Color:</span>
+                  <div className="flex items-center gap-1.5 bg-white dark:bg-[#0c0e14] p-1 rounded-lg border border-slate-200 dark:border-slate-800 shadow-xs">
+                    {LIVE_PRESET_COLORS.map((preset, idx) => (
                       <button
                         key={preset.name}
                         type="button"
                         title={preset.name}
-                        onClick={() => setActiveColor(idx)}
+                        onClick={() => setActiveColorIdx(idx)}
                         className={`w-6 h-6 rounded-md transition-all relative ${
-                          activeColor === idx ? 'ring-2 ring-[#ff6b35] scale-110' : 'opacity-80 hover:opacity-100'
+                          activeColorIdx === idx
+                            ? 'ring-2 ring-[hsl(245,79%,55%)] scale-110'
+                            : 'opacity-85 hover:opacity-100'
                         }`}
                         style={{
                           background: `linear-gradient(135deg, ${preset.start}, ${preset.end})`,
                         }}
                       >
-                        {activeColor === idx && (
-                          <span className="absolute inset-0 flex items-center justify-center text-white text-[10px]">
+                        {activeColorIdx === idx && (
+                          <span className="absolute inset-0 flex items-center justify-center text-white text-[10px] font-bold">
                             ✓
                           </span>
                         )}
@@ -356,271 +353,268 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
                 </div>
 
                 {/* Padding Slider */}
-                <div className="hidden lg:flex items-center gap-3 text-xs font-mono text-[#8e94a0]">
-                  <span>PADDING:</span>
+                <div className="hidden lg:flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 font-medium">
+                  <span>Padding:</span>
                   <input
                     type="range"
                     min="20"
-                    max="64"
+                    max="60"
                     value={padding}
                     onChange={(e) => setPadding(Number(e.target.value))}
-                    className="w-24 accent-[#ff6b35]"
+                    className="w-20 sm:w-24 accent-[hsl(245,79%,55%)]"
                   />
-                  <span className="w-8 text-right text-white font-medium">{padding}px</span>
+                  <span className="w-7 text-right font-mono text-[11px]">{padding}px</span>
                 </div>
 
-                {/* Frame Mode Toggle & Launch Link */}
-                <div className="flex items-center gap-3">
+                {/* Frame Mode & Open Editor */}
+                <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setFrameDarkMode(!frameDarkMode)}
-                    className="text-xs font-mono px-2.5 py-1.5 rounded-md bg-[#0a0c0f] border border-[#222631] text-[#8e94a0] hover:text-white"
+                    className="text-xs px-2.5 py-1.5 rounded-md bg-white dark:bg-[#0c0e14] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
                   >
-                    {frameDarkMode ? 'FRAME: DARK' : 'FRAME: LIGHT'}
+                    {frameDarkMode ? 'Dark Frame' : 'Light Frame'}
                   </button>
+
                   <Button
                     onClick={onStartCrafting}
                     size="sm"
-                    className="bg-[#202530] hover:bg-[#2b313f] text-white border border-[#313745] text-xs h-8 px-3 rounded-md"
+                    className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 text-xs h-8 px-3 rounded-md shadow-xs"
                   >
-                    <span>Open in Studio</span>
+                    <span>Open Editor</span>
                     <Maximize2 className="w-3 h-3 ml-1.5" />
                   </Button>
                 </div>
               </div>
 
-              {/* The Live Render Canvas Well */}
-              <div className="p-4 sm:p-10 bg-[#07080a] flex items-center justify-center overflow-x-auto min-h-[460px] sm:min-h-[560px]">
-                <div className="relative max-w-full transition-all duration-300">
+              {/* Responsive Live Canvas Area */}
+              <div className="p-4 sm:p-8 bg-slate-100/70 dark:bg-[#08090d] flex items-center justify-center overflow-x-hidden min-h-[360px] sm:min-h-[500px]">
+                <div className="max-w-full flex items-center justify-center">
                   <canvas
                     ref={canvasRef}
-                    className="max-h-[500px] w-auto h-auto object-contain rounded-xl workbench-rig-shadow transition-all"
+                    className="max-h-[460px] w-auto max-w-full h-auto object-contain rounded-xl preview-rig-shadow transition-all"
                   />
                 </div>
               </div>
 
-              {/* Workbench Status Footer Bar */}
-              <div className="bg-[#0e1015] px-6 py-2.5 border-t border-[#1e222c] flex items-center justify-between text-xs font-mono text-[#717786]">
-                <div className="flex items-center gap-4">
-                  <span>CANVAS: {frameType.toUpperCase()} FRAME</span>
-                  <span>&bull;</span>
-                  <span>PRESET: {COLOR_PRESETS[activeColor].name}</span>
-                </div>
-                <div className="flex items-center gap-2 text-[#ff6b35]">
-                  <span>Interactive Live Preview</span>
-                </div>
+              {/* Status bar */}
+              <div className="bg-slate-50 dark:bg-[#0f121a] px-4 sm:px-6 py-2 border-t border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                <span className="font-mono text-[11px]">
+                  Preset: {LIVE_PRESET_COLORS[activeColorIdx].name} ({frameType})
+                </span>
+                <span className="text-[hsl(245,79%,55%)] dark:text-indigo-400 font-medium text-[11px]">
+                  ● Interactive Live Preview
+                </span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Studio Capabilities Section (Asymmetric Architectural Grid, No Lazy Cards) */}
-        <section id="capabilities" className="py-20 sm:py-28 px-4 sm:px-6 border-t border-[#1a1d24] bg-[#0c0d11]">
-          <div className="max-w-6xl mx-auto space-y-16">
-            <div className="max-w-2xl">
-              <span className="font-mono text-xs uppercase tracking-widest text-[#ff6b35]">ENGINE ARCHITECTURE</span>
-              <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-white mt-2">
-                Built for builders who refuse generic, compressed screenshots.
+        {/* How It Works Section */}
+        <section
+          id="how-it-works"
+          className="py-16 sm:py-24 px-4 sm:px-6 border-t border-slate-200/80 dark:border-slate-800/80 bg-white/50 dark:bg-transparent scroll-mt-16"
+        >
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-12 sm:mb-16">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3">
+                How it works
               </h2>
-              <p className="text-sm sm:text-base text-[#8e94a0] mt-3">
-                Every feature is engineered for precision output: Chrome Web Store compliance, Twitter/X cards, and Retina resolution preservation.
+              <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-xl mx-auto">
+                Three simple steps to style screenshots and screen recordings
               </p>
             </div>
 
-            {/* Asymmetric Technical Breakdown */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-              {/* Feature 1 (Large 8 cols): The Frame Forge */}
-              <div className="md:col-span-8 p-6 sm:p-8 rounded-2xl bg-[#111318] border border-[#22252e] space-y-4">
-                <div className="w-10 h-10 rounded-xl bg-[#1a1e27] border border-[#2b313e] flex items-center justify-center text-[#ff6b35]">
-                  <Layers className="w-5 h-5" />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+              {/* Step 1 */}
+              <div className="p-6 rounded-2xl bg-white dark:bg-[#131620] border border-slate-200 dark:border-slate-800 shadow-sm text-center space-y-3">
+                <div className="w-12 h-12 mx-auto rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-xs">
+                  <Upload className="w-5 h-5" />
                 </div>
-                <h3 className="text-xl font-bold text-white tracking-tight">The Frame Forge</h3>
-                <p className="text-sm text-[#8e94a0] leading-relaxed max-w-xl">
-                  Authentic macOS Safari/Chrome window chrome with accurate traffic lights and address capsule. Switch to modern smartphone frames with dynamic camera notches or minimalist border frames without losing aspect ratio.
+                <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300">
+                  1
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                  Upload or Paste
+                </h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Drop or browse for images and videos. Paste screenshots with <kbd className="tactile-key">Ctrl+V</kbd> or <kbd className="tactile-key">Cmd+V</kbd>; previews keep their natural aspect ratio.
                 </p>
-                <div className="pt-2 flex flex-wrap gap-2 text-xs font-mono text-[#c4c9d4]">
-                  <span className="px-2.5 py-1 rounded bg-[#181a22] border border-[#282d38]">macOS Browser</span>
-                  <span className="px-2.5 py-1 rounded bg-[#181a22] border border-[#282d38]">Desktop Window</span>
-                  <span className="px-2.5 py-1 rounded bg-[#181a22] border border-[#282d38]">Smartphone Frame</span>
-                  <span className="px-2.5 py-1 rounded bg-[#181a22] border border-[#282d38]">Clean Borderless</span>
-                </div>
               </div>
 
-              {/* Feature 2 (4 cols): Native 0% Downscaling Engine */}
-              <div className="md:col-span-4 p-6 sm:p-8 rounded-2xl bg-[#111318] border border-[#22252e] space-y-4">
-                <div className="w-10 h-10 rounded-xl bg-[#1a1e27] border border-[#2b313e] flex items-center justify-center text-emerald-400">
-                  <Maximize2 className="w-5 h-5" />
+              {/* Step 2 */}
+              <div className="p-6 rounded-2xl bg-white dark:bg-[#131620] border border-slate-200 dark:border-slate-800 shadow-sm text-center space-y-3">
+                <div className="w-12 h-12 mx-auto rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800 flex items-center justify-center text-purple-600 dark:text-purple-400 shadow-xs">
+                  <Sliders className="w-5 h-5" />
                 </div>
-                <h3 className="text-xl font-bold text-white tracking-tight">0% Downscaling</h3>
-                <p className="text-sm text-[#8e94a0] leading-relaxed">
-                  Automatic dimension inspection detects your exact screen resolution on import. Canvas sizes to <code className="font-mono text-xs text-white">nativeWidth + padding*2</code> for 100% pixel sharpness.
+                <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300">
+                  2
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                  Customize Frames & Style
+                </h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Choose macOS browser, desktop, or mobile frames, vibrant gradients, padding, shadows, and platform presets for Twitter, Chrome Web Store, and LinkedIn.
                 </p>
-                <div className="text-xs font-mono text-emerald-400">✓ 1×, 2×, and 3× Retina offscreen exports</div>
               </div>
 
-              {/* Feature 3 (4 cols): Frame-by-Frame Video Studio */}
-              <div className="md:col-span-4 p-6 sm:p-8 rounded-2xl bg-[#111318] border border-[#22252e] space-y-4">
-                <div className="w-10 h-10 rounded-xl bg-[#1a1e27] border border-[#2b313e] flex items-center justify-center text-sky-400">
-                  <Video className="w-5 h-5" />
+              {/* Step 3 */}
+              <div className="p-6 rounded-2xl bg-white dark:bg-[#131620] border border-slate-200 dark:border-slate-800 shadow-sm text-center space-y-3">
+                <div className="w-12 h-12 mx-auto rounded-xl bg-pink-50 dark:bg-pink-950/60 border border-pink-200 dark:border-pink-800 flex items-center justify-center text-pink-600 dark:text-pink-400 shadow-xs">
+                  <ImageIcon className="w-5 h-5" />
                 </div>
-                <h3 className="text-xl font-bold text-white tracking-tight">Video Darkroom</h3>
-                <p className="text-sm text-[#8e94a0] leading-relaxed">
-                  Beautify screen recordings with the exact same frames and backgrounds. Scrub timelines, export MP4/WebM at 60fps, or grab any frame as a high-res still image.
+                <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300">
+                  3
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                  Download or Copy
+                </h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Choose 1×, 2×, or 3× output size for Retina-crisp PNGs, export MP4/WebM videos, or copy the image directly to your clipboard in one click.
                 </p>
-                <div className="text-xs font-mono text-sky-400">✓ MP4 / WebM hardware-accelerated stream</div>
-              </div>
-
-              {/* Feature 4 (8 cols): Zero-Cloud Cryptographic Privacy */}
-              <div className="md:col-span-8 p-6 sm:p-8 rounded-2xl bg-[#111318] border border-[#22252e] space-y-4">
-                <div className="w-10 h-10 rounded-xl bg-[#1a1e27] border border-[#2b313e] flex items-center justify-center text-amber-400">
-                  <ShieldCheck className="w-5 h-5" />
-                </div>
-                <h3 className="text-xl font-bold text-white tracking-tight">Complete Memory Isolation</h3>
-                <p className="text-sm text-[#8e94a0] leading-relaxed max-w-xl">
-                  Client-side binary magic-number validation checks file signatures (<code className="font-mono text-xs text-white">89 50 4E 47</code> for PNG, <code className="font-mono text-xs text-white">ftyp</code> for MP4) before rendering. No files, logs, or pixels ever touch a remote server.
-                </p>
-                <div className="pt-2 flex flex-wrap gap-2 text-xs font-mono text-[#c4c9d4]">
-                  <span className="px-2.5 py-1 rounded bg-[#181a22] border border-[#282d38]">Zero Network Storage</span>
-                  <span className="px-2.5 py-1 rounded bg-[#181a22] border border-[#282d38]">Offline Service Worker</span>
-                  <span className="px-2.5 py-1 rounded bg-[#181a22] border border-[#282d38]">No Account Wall</span>
-                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Technical Architecture Comparison Table */}
-        <section id="comparison" className="py-20 sm:py-24 px-4 sm:px-6 border-t border-[#1a1d24]">
-          <div className="max-w-5xl mx-auto space-y-12">
-            <div className="text-center space-y-3">
-              <span className="font-mono text-xs uppercase tracking-widest text-[#ff6b35]">TECHNICAL COMPARISON</span>
-              <h2 className="text-2xl sm:text-4xl font-bold text-white tracking-tight">
-                Why developers choose ScreenCraft
+        {/* Features and Privacy Section */}
+        <section id="features" className="py-16 sm:py-20 px-4 sm:px-6 border-t border-slate-200/80 dark:border-slate-800/80 scroll-mt-16">
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12">
+              {/* Features Column */}
+              <div className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#131620] border border-slate-200 dark:border-slate-800 shadow-sm">
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-4 sm:mb-6">
+                  Everything you need
+                </h3>
+                <ul className="space-y-3.5">
+                  {[
+                    'Keep the natural aspect ratio; export at 1×, 2×, or 3× scale',
+                    'Add realistic macOS browser, desktop, or smartphone frames',
+                    'Choose presets for Chrome Web Store, Twitter/X, and LinkedIn',
+                    'Customizable backgrounds: solid colors, gradients, or blur',
+                    'Copy directly to clipboard or export high-resolution PNG',
+                    'Screen recording beautification with MP4 & WebM exports',
+                  ].map((feature, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <Check className="w-5 h-5 text-emerald-500 mt-0.5 shrink-0" />
+                      <span className="text-slate-700 dark:text-slate-300 text-sm sm:text-base leading-snug">
+                        {feature}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Privacy Column */}
+              <div className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#131620] border border-slate-200 dark:border-slate-800 shadow-sm">
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-4 sm:mb-6">
+                  Privacy first
+                </h3>
+                <ul className="space-y-3.5">
+                  {[
+                    'Images and videos are processed entirely in your browser',
+                    'Your media files are never uploaded to any server or cloud',
+                    'No user account or signup is required to use all features',
+                    'Optional analytics records app events, never files or filenames',
+                    'Works completely offline after assets are cached as a PWA',
+                    'Safe client-side binary signature verification for security',
+                  ].map((feature, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <Check className="w-5 h-5 text-emerald-500 mt-0.5 shrink-0" />
+                      <span className="text-slate-700 dark:text-slate-300 text-sm sm:text-base leading-snug">
+                        {feature}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section
+          id="faq"
+          className="py-16 sm:py-24 px-4 sm:px-6 bg-slate-100/60 dark:bg-[#0c0e14] border-t border-slate-200/80 dark:border-slate-800/80 transition-colors scroll-mt-16"
+        >
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center mb-10 sm:mb-14">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3">
+                Frequently Asked Questions
               </h2>
-              <p className="text-sm sm:text-base text-[#8e94a0] max-w-xl mx-auto">
-                No paywalls, no image uploads, and zero watermarks.
+              <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
+                A few quick answers about ScreenCraft
               </p>
             </div>
 
-            <div className="rounded-2xl border border-[#222631] bg-[#111317] overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead>
-                    <tr className="border-b border-[#222631] bg-[#14171e] text-xs font-mono text-[#8e94a0]">
-                      <th className="py-4 px-6 font-semibold">CAPABILITY</th>
-                      <th className="py-4 px-6 font-semibold text-[#ff6b35]">SCREENCRAFT</th>
-                      <th className="py-4 px-6 font-semibold">SAAS MOCKUP TOOLS</th>
-                      <th className="py-4 px-6 font-semibold">MANUAL DESIGN (FIGMA)</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#1e212b] text-xs font-mono">
-                    <tr>
-                      <td className="py-4 px-6 text-white font-medium">Data Privacy</td>
-                      <td className="py-4 px-6 text-emerald-400 font-semibold">100% In-Browser Memory</td>
-                      <td className="py-4 px-6 text-[#717786]">Uploaded to Cloud Storage</td>
-                      <td className="py-4 px-6 text-[#717786]">Local / Cloud Workspace</td>
-                    </tr>
-                    <tr>
-                      <td className="py-4 px-6 text-white font-medium">Video Beautification</td>
-                      <td className="py-4 px-6 text-emerald-400 font-semibold">Yes (MP4 / WebM with Frames)</td>
-                      <td className="py-4 px-6 text-[#717786]">Locked behind $29/mo plan</td>
-                      <td className="py-4 px-6 text-[#717786]">Requires AfterEffects / Plugins</td>
-                    </tr>
-                    <tr>
-                      <td className="py-4 px-6 text-white font-medium">Native Resolution</td>
-                      <td className="py-4 px-6 text-emerald-400 font-semibold">Auto-Preserved (0% Loss)</td>
-                      <td className="py-4 px-6 text-[#717786]">Downscaled to 1200px</td>
-                      <td className="py-4 px-6 text-[#717786]">Manual Artboard Setup</td>
-                    </tr>
-                    <tr>
-                      <td className="py-4 px-6 text-white font-medium">Instant Clipboard Import</td>
-                      <td className="py-4 px-6 text-emerald-400 font-semibold">Cmd+V / Ctrl+V from OS</td>
-                      <td className="py-4 px-6 text-[#717786]">File Dialog Upload Only</td>
-                      <td className="py-4 px-6 text-[#717786]">Paste into Canvas</td>
-                    </tr>
-                    <tr>
-                      <td className="py-4 px-6 text-white font-medium">Retina Export Options</td>
-                      <td className="py-4 px-6 text-emerald-400 font-semibold">1×, 2×, 3× Crisp PNG</td>
-                      <td className="py-4 px-6 text-[#717786]">Watermarked on Free Tier</td>
-                      <td className="py-4 px-6 text-[#717786]">Custom Export Multiplier</td>
-                    </tr>
-                    <tr>
-                      <td className="py-4 px-6 text-white font-medium">Cost & Accounts</td>
-                      <td className="py-4 px-6 text-emerald-400 font-semibold">Free &bull; No Login Required</td>
-                      <td className="py-4 px-6 text-[#717786]">Freemium / Monthly Billing</td>
-                      <td className="py-4 px-6 text-[#717786]">Paid Subscription</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Documentation / FAQ (Architectural Hairlines, No Card Clutter) */}
-        <section id="faq" className="py-20 sm:py-24 px-4 sm:px-6 border-t border-[#1a1d24] bg-[#0c0d11]">
-          <div className="max-w-3xl mx-auto space-y-10">
-            <div className="space-y-2">
-              <span className="font-mono text-xs uppercase tracking-widest text-[#ff6b35]">TECHNICAL REFERENCE</span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Frequently Asked Questions</h2>
-            </div>
-
-            <Accordion type="single" collapsible className="w-full divide-y divide-[#22252c] border-y border-[#22252c]">
-              <AccordionItem value="item-1" className="border-none py-2">
-                <AccordionTrigger className="text-base font-semibold text-white hover:text-[#ff6b35] hover:no-underline py-4 text-left">
-                  How does ScreenCraft maintain 100% native resolution?
+            <Accordion type="single" collapsible className="w-full space-y-3">
+              <AccordionItem
+                value="item-1"
+                className="bg-white dark:bg-[#131620] rounded-xl px-5 sm:px-6 border border-slate-200 dark:border-slate-800 shadow-xs"
+              >
+                <AccordionTrigger className="text-base font-semibold text-slate-900 dark:text-white hover:no-underline text-left py-4">
+                  How do I create mockups for the Chrome Web Store?
                 </AccordionTrigger>
-                <AccordionContent className="text-sm text-[#8e94a0] leading-relaxed pb-4">
-                  When you upload or paste an image, the engine reads the natural image dimensions (<code className="font-mono text-xs text-white">naturalWidth</code> & <code className="font-mono text-xs text-white">naturalHeight</code>) and calculates the canvas as <code className="font-mono text-xs text-white">width = naturalWidth + padding*2</code>. There is zero resampling or downscaling prior to export.
+                <AccordionContent className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed pb-4">
+                  Choose a Chrome Web Store preset in the editor (1280×800 for screenshots or 1400×560 for promotional marquees) to automatically size your canvas according to Google's store specifications.
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="item-2" className="border-none py-2">
-                <AccordionTrigger className="text-base font-semibold text-white hover:text-[#ff6b35] hover:no-underline py-4 text-left">
-                  Are my private screenshots or videos ever uploaded?
+              <AccordionItem
+                value="item-2"
+                className="bg-white dark:bg-[#131620] rounded-xl px-5 sm:px-6 border border-slate-200 dark:border-slate-800 shadow-xs"
+              >
+                <AccordionTrigger className="text-base font-semibold text-slate-900 dark:text-white hover:no-underline text-left py-4">
+                  Does ScreenCraft change my original file?
                 </AccordionTrigger>
-                <AccordionContent className="text-sm text-[#8e94a0] leading-relaxed pb-4">
-                  Never. ScreenCraft runs strictly client-side using the HTML5 2D Canvas API and the browser MediaRecorder stream API. No files, metadata, or frames leave your local machine.
+                <AccordionContent className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed pb-4">
+                  No. Your original file stays completely unchanged. The canvas wraps your capture in a frame and adds styling around it. PNG exports use the natural dimensions multiplied by the selected 1×, 2×, or 3× export scale.
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="item-3" className="border-none py-2">
-                <AccordionTrigger className="text-base font-semibold text-white hover:text-[#ff6b35] hover:no-underline py-4 text-left">
-                  Can I create assets for the Chrome Web Store?
+              <AccordionItem
+                value="item-3"
+                className="bg-white dark:bg-[#131620] rounded-xl px-5 sm:px-6 border border-slate-200 dark:border-slate-800 shadow-xs"
+              >
+                <AccordionTrigger className="text-base font-semibold text-slate-900 dark:text-white hover:no-underline text-left py-4">
+                  Are my screenshots private and secure?
                 </AccordionTrigger>
-                <AccordionContent className="text-sm text-[#8e94a0] leading-relaxed pb-4">
-                  Yes. The editor includes exact canvas presets for Chrome Web Store screenshots (1280×800) and promotional marquees (1400×560), alongside Twitter/X (1200×675), Instagram, and Product Hunt dimensions.
+                <AccordionContent className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed pb-4">
+                  Yes, 100%. Images and screen recordings are processed entirely in your web browser memory and are never uploaded to any server. If you allow analytics, it only records basic app interactions (such as which frame type was selected), never your files or filenames.
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="item-4" className="border-none py-2">
-                <AccordionTrigger className="text-base font-semibold text-white hover:text-[#ff6b35] hover:no-underline py-4 text-left">
-                  How does direct clipboard copy work?
+              <AccordionItem
+                value="item-4"
+                className="bg-white dark:bg-[#131620] rounded-xl px-5 sm:px-6 border border-slate-200 dark:border-slate-800 shadow-xs"
+              >
+                <AccordionTrigger className="text-base font-semibold text-slate-900 dark:text-white hover:no-underline text-left py-4">
+                  Can I paste screenshots directly from my clipboard?
                 </AccordionTrigger>
-                <AccordionContent className="text-sm text-[#8e94a0] leading-relaxed pb-4">
-                  ScreenCraft uses the modern <code className="font-mono text-xs text-white">navigator.clipboard.write</code> API with Blob rendering. In one click, your beautified 2×/3× PNG is loaded into your operating system clipboard, ready to paste into Slack, Notion, Twitter, or Figma.
+                <AccordionContent className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed pb-4">
+                  Yes! With ScreenCraft open, simply press <kbd className="tactile-key">Ctrl+V</kbd> on Windows/Linux or <kbd className="tactile-key">Cmd+V</kbd> on Mac to import an image directly from your clipboard without saving it first.
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
           </div>
         </section>
 
-        {/* Final Studio Call to Action */}
-        <section className="py-20 sm:py-28 px-4 sm:px-6 border-t border-[#1a1d24]">
-          <div className="max-w-4xl mx-auto rounded-2xl bg-[#111317] border border-[#22252c] p-8 sm:p-14 text-center space-y-6">
-            <h2 className="text-2xl sm:text-4xl font-bold text-white tracking-tight">
-              Ready to craft clean, studio-grade visuals?
+        {/* Footer CTA */}
+        <section className="py-16 sm:py-20 px-4 sm:px-6 border-t border-slate-200/80 dark:border-slate-800/80">
+          <div className="max-w-2xl mx-auto text-center space-y-4">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
+              Ready to beautify your screenshots?
             </h2>
-            <p className="text-sm sm:text-base text-[#8e94a0] max-w-xl mx-auto">
-              Launch the canvas editor, paste your capture, and download your high-DPI export in seconds.
+            <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
+              Open the editor and start creating. No signup required.
             </p>
             <div className="pt-2">
               <Button
                 onClick={onStartCrafting}
                 size="lg"
-                className="h-12 px-8 bg-[#ff6b35] hover:bg-[#e05622] text-white font-medium text-base rounded-xl shadow-lg shadow-[#ff6b35]/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,47%)] text-white text-base font-medium px-8 py-5 h-auto rounded-xl shadow-lg shadow-[hsl(245,79%,55%)]/20 transition-all hover:scale-[1.01]"
               >
-                <span>Launch Canvas Studio</span>
+                <span>Start Crafting Now — Free</span>
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
@@ -628,52 +622,61 @@ export const LandingPage = memo(function LandingPage({ onStartCrafting }: Landin
         </section>
       </main>
 
-      {/* Studio Colophon Footer */}
-      <footer className="py-8 px-4 sm:px-6 border-t border-[#1a1d24] bg-[#07080a] text-xs font-mono text-[#686f7d]">
+      {/* Footer */}
+      <footer className="py-8 px-4 sm:px-6 border-t border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#080a0e] text-xs text-slate-500 transition-colors">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          {/* Logo & Brand */}
           <div className="flex items-center gap-2">
-            <span className="font-bold text-[#ff6b35]">ScreenCraft Studio</span>
-            <span>&bull;</span>
-            <span>Local Darkroom & Metrology</span>
+            <img
+              src="/logo.png"
+              alt="ScreenCraft logo"
+              width="24"
+              height="24"
+              className="w-5 h-5 sm:w-6 sm:h-6 rounded-md"
+            />
+            <span className="font-semibold text-slate-800 dark:text-slate-200">ScreenCraft</span>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 text-[#8e94a0]">
-            <a href="#workbench" className="hover:text-white transition-colors">
-              Stage
+          {/* Links */}
+          <div className="flex flex-wrap items-center justify-center gap-4 text-slate-600 dark:text-slate-400">
+            <a href="#how-it-works" className="hover:text-slate-900 dark:hover:text-white transition-colors">
+              How it works
             </a>
-            <a href="#capabilities" className="hover:text-white transition-colors">
-              Capabilities
+            <a href="#features" className="hover:text-slate-900 dark:hover:text-white transition-colors">
+              Features
             </a>
-            <a href="#comparison" className="hover:text-white transition-colors">
-              Architecture
+            <a href="#faq" className="hover:text-slate-900 dark:hover:text-white transition-colors">
+              FAQ
             </a>
-            <a href="/help" className="hover:text-white transition-colors">
+            <a href="/help" className="hover:text-slate-900 dark:hover:text-white transition-colors">
               Help
             </a>
-            <a href="/privacy" className="hover:text-white transition-colors">
+            <a href="/privacy" className="hover:text-slate-900 dark:hover:text-white transition-colors">
               Privacy
             </a>
             {isAnalyticsConfigured() && (
               <button
                 type="button"
                 onClick={openAnalyticsSettings}
-                className="hover:text-white transition-colors"
+                className="hover:text-slate-900 dark:hover:text-white transition-colors"
               >
-                Telemetry
+                Analytics settings
               </button>
             )}
             <a
               href="https://github.com/sg172003/Screen_Craft"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-white transition-colors"
+              className="hover:text-slate-900 dark:hover:text-white transition-colors"
             >
               GitHub
             </a>
           </div>
 
-          <p className="text-center sm:text-right text-[#555a64]">
-            &copy; {new Date().getFullYear()} ScreenCraft. MIT License.
+          {/* Attribution */}
+          <p className="text-center sm:text-right text-slate-500 dark:text-slate-400">
+            &copy; {new Date().getFullYear()} ScreenCraft. <br />
+            <b>Author: Sarthak</b>
           </p>
         </div>
       </footer>
