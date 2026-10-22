@@ -285,25 +285,13 @@ export const LandingPage = memo(function LandingPage({
               <Button
                 onClick={onStartCrafting}
                 size="lg"
-                className="group w-full sm:w-auto h-12 px-7 bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,47%)] text-white text-base font-medium rounded-xl shadow-lg shadow-[hsl(245,79%,55%)]/20 transition-all duration-200 hover:scale-[1.01] active:scale-[0.98]"
+                className="group w-full sm:w-auto h-12 px-8 bg-[hsl(245,79%,55%)] hover:bg-[hsl(245,79%,47%)] text-white text-base font-medium rounded-xl shadow-lg shadow-[hsl(245,79%,55%)]/20 transition-all duration-200 hover:scale-[1.01] active:scale-[0.98]"
               >
                 <span>Start Crafting — Free</span>
                 <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-200 group-hover:translate-x-1" />
               </Button>
 
-              {!isInstalled && onInstallClick && (
-                <Button
-                  onClick={onInstallClick}
-                  variant="outline"
-                  size="lg"
-                  className="w-full sm:w-auto h-12 px-6 rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131620] hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-sm font-medium transition-all duration-200 hover:scale-[1.01] active:scale-[0.98] shadow-xs"
-                >
-                  <Download className="w-4 h-4 mr-2 text-[hsl(245,79%,55%)] transition-transform duration-200 group-hover:-translate-y-0.5" />
-                  <span>Download App (PWA)</span>
-                </Button>
-              )}
-
-              <div className="inline-flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-white dark:bg-[#131620] px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+              <div className="inline-flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-white dark:bg-[#131620] px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
                 <span className="tactile-key">⌘V</span>
                 <span>or</span>
                 <span className="tactile-key">Ctrl+V</span>
